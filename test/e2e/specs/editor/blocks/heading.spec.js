@@ -373,15 +373,16 @@ test.describe( 'Heading', () => {
 			'should show content'
 		).toHaveText( 'Heading content' );
 
-		await editor.openDocumentSettingsSidebar();
+		await editor.showBlockToolbar();
+		await editor.clickBlockOptionsMenuItem( 'Rename' );
 
-		await page.getByRole( 'button', { name: 'Advanced' } ).click();
-
-		await page
+		const renameDialog = page.getByRole( 'dialog', { name: 'Rename' } );
+		await renameDialog
 			.getByRole( 'textbox', {
 				name: 'Block name',
 			} )
 			.fill( 'My new name' );
+		await renameDialog.getByRole( 'button', { name: 'Save' } ).click();
 
 		await expect(
 			listView.getByRole( 'link' ),
