@@ -40,6 +40,7 @@ export default function BulkActionsPopover( {
 	actions = EMPTY_ARRAY,
 	setSelection,
 	getItemId,
+	anchor,
 } ) {
 	const selectedItems = useMemo( () => {
 		return data.filter( ( item ) =>
@@ -70,6 +71,7 @@ export default function BulkActionsPopover( {
 		<Popover
 			placement="bottom-middle"
 			className="dataviews-bulk-actions-popover"
+			anchor={ anchor }
 		>
 			<Toolbar label="Bulk actions">
 				<div className="dataviews-bulk-actions-toolbar-wrapper">
