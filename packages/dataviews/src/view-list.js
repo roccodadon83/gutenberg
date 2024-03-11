@@ -6,6 +6,7 @@ import classNames from 'classnames';
 /**
  * WordPress dependencies
  */
+import { forwardRef } from '@wordpress/element';
 import { useAsyncList, useInstanceId } from '@wordpress/compose';
 import {
 	__experimentalHStack as HStack,
@@ -135,18 +136,19 @@ function ListItem( {
 	);
 }
 
-export default function ViewList( {
-	view,
-	fields,
-	data,
-	isLoading,
-	getItemId,
-	onSelectionChange,
-	onDetailsChange,
-	selection,
-	deferredRendering,
-	id: preferredId,
-} ) {
+const ViewList = forwardRef( ( props, ref ) => {
+	const {
+		view,
+		fields,
+		data,
+		isLoading,
+		getItemId,
+		onSelectionChange,
+		onDetailsChange,
+		selection,
+		deferredRendering,
+		id: preferredId,
+	} = props;
 	const baseId = useInstanceId( ViewList, 'view-list', preferredId );
 	const shownData = useAsyncList( data, { step: 3 } );
 	const usedData = deferredRendering ? shownData : data;
@@ -205,6 +207,7 @@ export default function ViewList( {
 			className="dataviews-view-list"
 			role="grid"
 			store={ store }
+			ref={ ref }
 		>
 			{ usedData.map( ( item ) => {
 				const id = getItemDomId( item );
@@ -224,4 +227,5 @@ export default function ViewList( {
 			} ) }
 		</Composite>
 	);
-}
+} );
+export default ViewList;
