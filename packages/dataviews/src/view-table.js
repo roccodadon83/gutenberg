@@ -361,8 +361,7 @@ function TableRow( {
 	);
 }
 
-const ViewTable = forwardRef( ( pros, ref ) => {
-	const {
+function ViewTable( {
 	view,
 	onChangeView,
 	fields,
@@ -374,7 +373,7 @@ const ViewTable = forwardRef( ( pros, ref ) => {
 	selection,
 	onSelectionChange,
 	setOpenedFilter,
-	} = pros;
+} ) {
 	const headerMenuRefs = useRef( new Map() );
 	const headerMenuToFocusRef = useRef();
 	const [ nextHeaderMenuToFocus, setNextHeaderMenuToFocus ] = useState();
@@ -424,7 +423,6 @@ const ViewTable = forwardRef( ( pros, ref ) => {
 				className="dataviews-view-table"
 				aria-busy={ isLoading }
 				aria-describedby={ tableNoticeId }
-				ref={ ref }
 			>
 				<thead>
 					<tr className="dataviews-view-table__row">
@@ -534,6 +532,6 @@ const ViewTable = forwardRef( ( pros, ref ) => {
 			</div>
 		</>
 	);
-} );
+}
 
 export default ViewTable;

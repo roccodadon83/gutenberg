@@ -15,7 +15,6 @@ import {
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { useAsyncList } from '@wordpress/compose';
-import { forwardRef } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -126,18 +125,17 @@ function GridItem( {
 	);
 }
 
-const ViewGrid = forwardRef( ( props, ref ) => {
-	const {
-		data,
-		fields,
-		view,
-		actions,
-		isLoading,
-		getItemId,
-		deferredRendering,
-		selection,
-		onSelectionChange,
-	} = props;
+export default function ViewGrid( {
+	data,
+	fields,
+	view,
+	actions,
+	isLoading,
+	getItemId,
+	deferredRendering,
+	selection,
+	onSelectionChange,
+} ) {
 	const mediaField = fields.find(
 		( field ) => field.id === view.layout.mediaField
 	);
@@ -163,7 +161,6 @@ const ViewGrid = forwardRef( ( props, ref ) => {
 					alignment="top"
 					className="dataviews-view-grid"
 					aria-busy={ isLoading }
-					ref={ ref }
 				>
 					{ usedData.map( ( item ) => {
 						return (
@@ -195,5 +192,4 @@ const ViewGrid = forwardRef( ( props, ref ) => {
 			) }
 		</>
 	);
-} );
-export default ViewGrid;
+}
