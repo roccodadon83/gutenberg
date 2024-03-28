@@ -14,6 +14,7 @@ use PHP_CodeSniffer\Sniffs\Sniff;
 use PHP_CodeSniffer\Util\Tokens;
 use PHPCSUtils\Tokens\Collections;
 use PHPCSUtils\Utils\FunctionDeclarations;
+use PHPCSUtils\Utils\GetTokensAsString;
 use PHPCSUtils\Utils\ObjectDeclarations;
 use PHPCSUtils\Utils\Scopes;
 use WordPressCS\WordPress\Helpers\WPHookHelper;
@@ -91,6 +92,13 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		}
 	}
 
+	/**
+	 * Processes a token that represents a WordPress hook function call
+	 * to check for a missing `@since` tag in its docblock.
+	 *
+	 * @param File $phpcs_file   The file being scanned.
+	 * @param int $stack_pointer The position of the hook token in the stack.
+	 */
 	protected function process_hook( File $phpcs_file, $stack_pointer ) {
 		$tokens = $phpcs_file->getTokens();
 
@@ -112,7 +120,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 
 		$violation_code = 'missingSinceTag';
 
-		$docblock = static::find_docblock( $phpcs_file, $stack_pointer );
+		$docblock = static::find_hook_docblock( $phpcs_file, $stack_pointer );
 		if ( false === $docblock ) {
 			$phpcs_file->addError( $missing_since_tag_error_message, $stack_pointer, $violation_code );
 			return;
@@ -122,6 +130,12 @@ class FunctionCommentSinceTagSniff implements Sniff {
 
 		$version_token = static::find_version_tag_token( $phpcs_file, $doc_block_start_token, $doc_block_end_token );
 		if ( false === $version_token ) {
+			$docblock_content = GetTokensAsString::compact( $phpcs_file, $doc_block_start_token, $doc_block_end_token, false );
+			if ( false !== stripos( $docblock_content, 'This filter is documented in ' ) ) {
+				// The hook is documented elsewhere.
+				return;
+			}
+
 			$phpcs_file->addError( $missing_since_tag_error_message, $doc_block_start_token, $violation_code );
 			return;
 		}
@@ -305,6 +319,29 @@ class FunctionCommentSinceTagSniff implements Sniff {
 				$version_value,
 			)
 		);
+	}
+
+	/**
+	 * Finds the docblock associated with a hook, starting from a specified position in the token stack.
+	 * Since a line containing a hook can include any type of tokens, this method backtracks through the tokens
+	 * to locate the first token on the current line. This token is then used as the starting point for searching the docblock.
+	 *
+	 * @param File $phpcs_file   The file being scanned.
+	 * @param int $stack_pointer The position to start looking for the docblock.
+	 * @return array|false The start and end tokens of the docblock, or false if not found.
+	 */
+	protected static function find_hook_docblock( File $phpcs_file, $stack_pointer ) {
+		$tokens       = $phpcs_file->getTokens();
+		$current_line = $tokens[ $stack_pointer ]['line'];
+
+		for ( $i = $stack_pointer; $i >= 0; $i -- ) {
+			if ( $tokens[ $i ]['line'] < $current_line ) {
+				// The previous token is on the previous line, so the current token is the first on the line.
+				return static::find_docblock( $phpcs_file, $i + 1 );
+			}
+		}
+
+		return static::find_docblock( $phpcs_file, 0 );
 	}
 
 	/**
