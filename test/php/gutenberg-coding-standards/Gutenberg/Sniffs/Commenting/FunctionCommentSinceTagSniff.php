@@ -346,7 +346,12 @@ class FunctionCommentSinceTagSniff implements Sniff {
 			}
 		}
 
-		if ( T_DOC_COMMENT_CLOSE_TAG !== $tokens[ $comment_end ]['code'] ) {
+		$docblock_end_tags = array(
+			T_DOC_COMMENT_CLOSE_TAG,
+			T_COMMENT
+		);
+
+		if ( ! in_array( $tokens[ $comment_end ]['code'], $docblock_end_tags, true ) ) {
 			return false;
 		}
 
