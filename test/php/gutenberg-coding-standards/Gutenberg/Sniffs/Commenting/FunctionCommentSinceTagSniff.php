@@ -16,6 +16,7 @@ use PHPCSUtils\Tokens\Collections;
 use PHPCSUtils\Utils\FunctionDeclarations;
 use PHPCSUtils\Utils\ObjectDeclarations;
 use PHPCSUtils\Utils\Scopes;
+use WordPressCS\WordPress\Helpers\WPHookHelper;
 
 
 /**
@@ -50,7 +51,8 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		return array(
 			T_FUNCTION,
 			T_VARIABLE,
-			T_CLASS
+			T_CLASS,
+			T_STRING
 		);
 	}
 
@@ -79,9 +81,67 @@ class FunctionCommentSinceTagSniff implements Sniff {
 			return;
 		}
 
+		if ( 'T_STRING' === $token['type'] ) {
+			$this->process_hook( $phpcsFile, $stackPtr );
+			return;
+		}
+
 		if ( Scopes::isOOProperty( $phpcsFile, $stackPtr ) ) {
 			$this->process_class_property_token( $phpcsFile, $stackPtr );
 		}
+	}
+
+	protected function process_hook( File $phpcs_file, $stack_pointer ) {
+		$tokens = $phpcs_file->getTokens();
+
+		// The content of the current token.
+		$hook_function = $tokens[ $stack_pointer ]['content'];
+
+		$hook_functions = array_keys( WPHookHelper::get_functions( false ) );
+
+		// Check if the current token content is one of the filter functions.
+		if ( ! in_array( $hook_function, $hook_functions, true ) ) {
+			// Not a hook.
+			return;
+		}
+
+		$missing_since_tag_error_message = sprintf(
+			'@since tag is missing for the "%s" hook.',
+			$hook_function,
+		);
+
+		$violation_code = 'missingSinceTag';
+
+		$docblock = static::find_docblock( $phpcs_file, $stack_pointer );
+		if ( false === $docblock ) {
+			$phpcs_file->addError( $missing_since_tag_error_message, $stack_pointer, $violation_code );
+			return;
+		}
+
+		list( $doc_block_start_token, $doc_block_end_token ) = $docblock;
+
+		$version_token = static::find_version_tag_token( $phpcs_file, $doc_block_start_token, $doc_block_end_token );
+		if ( false === $version_token ) {
+			$phpcs_file->addError( $missing_since_tag_error_message, $doc_block_start_token, $violation_code );
+			return;
+		}
+
+		$version_value = $tokens[ $version_token ]['content'];
+
+		if ( version_compare( $version_value, '0.0.1', '>=' ) ) {
+			// Validate the version value.
+			return;
+		}
+
+		$phpcs_file->addError(
+			'Invalid @since version value for the "%s()" hook: "%s". Version value must be greater than or equal to 0.0.1.',
+			$version_token,
+			'InvalidClassSinceTagVersionValue',
+			array(
+				$hook_function,
+				$version_value,
+			)
+		);
 	}
 
 	protected function process_class_token( File $phpcs_file, $stack_pointer ) {
@@ -117,7 +177,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		}
 
 		$phpcs_file->addError(
-			'Invalid @since version value for the "%s()" class: "%s". Version value must be greater than or equal to 0.0.1.',
+			'Invalid @since version value for the "%s()" hook: "%s". Version value must be greater than or equal to 0.0.1.',
 			$version_token,
 			'InvalidClassSinceTagVersionValue',
 			array(
