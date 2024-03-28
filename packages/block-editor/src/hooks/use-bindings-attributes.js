@@ -4,7 +4,7 @@
 import { getBlockType, store as blocksStore } from '@wordpress/blocks';
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { useLayoutEffect, useCallback } from '@wordpress/element';
+import { useLayoutEffect, useCallback, useRef } from '@wordpress/element';
 import { addFilter } from '@wordpress/hooks';
 import { RichTextData } from '@wordpress/rich-text';
 
@@ -76,10 +76,11 @@ const BindingConnector = ( {
 	source,
 	onPropValueChange,
 } ) => {
-	const { placeholder, value: propValue } = source.useSource(
-		blockProps,
-		args
-	);
+	const {
+		placeholder,
+		value: propValue,
+		updateValue: updatePropValue,
+	} = source.useSource( blockProps, args );
 
 	const { name: blockName } = blockProps;
 	const attrValue = blockProps.attributes[ attrName ];
@@ -116,9 +117,16 @@ const BindingConnector = ( {
 		[ attrName, onPropValueChange ]
 	);
 
+	const prevPropValue = useRef(); // intially undefined for the initial sync.
+	const prevAttrValue = useRef( attrValue );
+
 	useLayoutEffect( () => {
 		if ( typeof propValue !== 'undefined' ) {
-			updateBoundAttibute( propValue, attrValue );
+			// Sync from external source propery to block attribute.
+			if ( propValue !== prevPropValue.current ) {
+				prevPropValue.current = propValue;
+				return updateBoundAttibute( propValue, attrValue ); // close the loop.
+			}
 		} else if ( placeholder ) {
 			/*
 			 * Placeholder fallback.
@@ -135,7 +143,13 @@ const BindingConnector = ( {
 				return;
 			}
 
-			updateBoundAttibute( placeholder );
+			return updateBoundAttibute( placeholder );
+		}
+
+		// Sync from block attribute to external source property.
+		if ( attrValue !== prevAttrValue.current ) {
+			prevAttrValue.current = attrValue;
+			updatePropValue( attrValue );
 		}
 	}, [
 		updateBoundAttibute,
@@ -144,6 +158,7 @@ const BindingConnector = ( {
 		placeholder,
 		blockName,
 		attrName,
+		updatePropValue,
 	] );
 
 	return null;
