@@ -489,25 +489,7 @@ function BackgroundImageToolsPanelItem( {
 			resetAllFilter={ resetAllFilter }
 			panelId={ panelId }
 		>
-			<div
-				className="block-editor-global-styles-background-panel__inspector-media-replace-container"
-				ref={ replaceContainerRef }
-			>
-				<InspectorImagePreviewToggle
-					label={ __( 'Background image' ) }
-					filename={ title || __( 'Untitled' ) }
-					url={ url }
-					allowPopover={ shouldShowBackgroundImageControls }
-				>
-					<BackgroundSizeToolsPanelItem
-						onChange={ onChange }
-						panelId={ panelId }
-						defaultControls={ defaultControls }
-						style={ style }
-						inheritedValue={ inheritedValue }
-						defaultValues={ defaultValues }
-					/>
-				</InspectorImagePreviewToggle>
+			<div ref={ replaceContainerRef }>
 				<MediaReplaceFlow
 					mediaId={ id }
 					mediaURL={ url }
@@ -665,17 +647,7 @@ function BackgroundSizeToolsPanelItem( {
 		);
 
 	return (
-		<VStack
-			as={ ToolsPanelItem }
-			spacing={ 2 }
-			className="single-column"
-			hasValue={ () => hasValue }
-			label={ __( 'Size' ) }
-			onDeselect={ resetBackgroundSize }
-			resetAllFilter={ resetAllFilter }
-			isShownByDefault={ defaultControls.backgroundSize }
-			panelId={ panelId }
-		>
+		<VStack spacing={ 2 } className="single-column">
 			<FocalPointPicker
 				__next40pxDefaultSize
 				label={ __( 'Position' ) }
@@ -755,7 +727,7 @@ function BackgroundToolsPanel( {
 
 const DEFAULT_CONTROLS = {
 	backgroundImage: true,
-	backgroundSize: true,
+	backgroundSize: false,
 };
 
 export default function BackgroundPanel( {
@@ -775,6 +747,49 @@ export default function BackgroundPanel( {
 		};
 	}, [] );
 
+	const { id, title, url } = value?.background?.backgroundImage || {
+		...inheritedValue?.background?.backgroundImage,
+	};
+
+	const hasImageValue =
+		hasBackgroundImageValue( value ) ||
+		hasBackgroundImageValue( inheritedValue );
+
+	const hasSizeValue =
+		hasBackgroundSizeValue( value ) ||
+		hasBackgroundSizeValue( inheritedValue );
+
+	const shouldShowBackgroundImageControls =
+		hasImageValue &&
+		( settings?.background?.backgroundSize ||
+			settings?.background?.backgroundPosition ||
+			settings?.background?.backgroundRepeat );
+
+	const resetBackgroundSize = () =>
+		onChange(
+			setImmutably( value, [ 'background' ], {
+				...value?.background,
+				backgroundPosition: undefined,
+				backgroundRepeat: undefined,
+				backgroundSize: undefined,
+			} )
+		);
+
+	const backgroundSizeResetAllFilter = useCallback( ( previousValue ) => {
+		return {
+			...previousValue,
+			style: {
+				...previousValue.style,
+				background: {
+					...previousValue.style?.background,
+					backgroundRepeat: undefined,
+					backgroundSize: undefined,
+				},
+			},
+		};
+	}, [] );
+
+
 	return (
 		<Wrapper
 			resetAllFilter={ resetAllFilter }
@@ -782,15 +797,41 @@ export default function BackgroundPanel( {
 			onChange={ onChange }
 			panelId={ panelId }
 		>
-			<BackgroundImageToolsPanelItem
-				onChange={ onChange }
-				panelId={ panelId }
-				defaultControls={ defaultControls }
-				style={ value }
-				inheritedValue={ inheritedValue }
-				defaultValues={ defaultValues }
-				settings={ settings }
-			/>
+			<div className="block-editor-global-styles-background-panel__inspector-media-replace-container">
+				<InspectorImagePreviewToggle
+					label={ __( 'Background image' ) }
+					filename={ title || __( 'Untitled' ) }
+					url={ url }
+					allowPopover={ shouldShowBackgroundImageControls }
+				>
+					<BackgroundSizeToolsPanelItem
+						onChange={ onChange }
+						panelId={ panelId }
+						defaultControls={ defaultControls }
+						style={ value }
+						inheritedValue={ inheritedValue }
+						defaultValues={ defaultValues }
+					/>
+				</InspectorImagePreviewToggle>
+				<BackgroundImageToolsPanelItem
+					onChange={ onChange }
+					panelId={ panelId }
+					defaultControls={ defaultControls }
+					style={ value }
+					inheritedValue={ inheritedValue }
+					defaultValues={ defaultValues }
+					settings={ settings }
+				/>
+				{/*Dummy toolspanel items so we can control what's in the dropdown popover*/}
+				<ToolsPanelItem
+					hasValue={ () => hasSizeValue }
+					label={ __( 'Size' ) }
+					onDeselect={ resetBackgroundSize }
+					resetAllFilter={ backgroundSizeResetAllFilter }
+					isShownByDefault={ defaultControls.backgroundSize }
+					panelId={ panelId }
+				/>
+			</div>
 		</Wrapper>
 	);
 }
