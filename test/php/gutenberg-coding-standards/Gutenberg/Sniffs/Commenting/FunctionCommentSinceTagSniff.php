@@ -115,8 +115,8 @@ class FunctionCommentSinceTagSniff implements Sniff {
 	}
 
 	/**
-	 * Processes a token that represents a WordPress hook function call
-	 * to check for a missing `@since` tag in its docblock.
+	 * Processes a token representing a function call that invokes a WordPress hook,
+	 * checking for a missing `@since` tag in its docblock.
 	 *
 	 * @param File $phpcs_file   The file being scanned.
 	 * @param int  $stack_pointer The position of the hook token in the stack.
@@ -142,7 +142,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 
 		$missing_since_tag_error_message = sprintf(
 			'@since tag is missing for the "%s" hook.',
-			$hook_function,
+			$hook_function
 		);
 
 		$violation_code = 'MissingHookSinceTag';
@@ -446,9 +446,9 @@ class FunctionCommentSinceTagSniff implements Sniff {
 	/**
 	 * Searches for a version tag within a docblock.
 	 *
-	 * @param File $phpcs_file         The file being scanned.
-	 * @param int  $docBlockStartToken The token index where the docblock starts.
-	 * @param int  $docBlockEndToken   The token index where the docblock ends.
+	 * @param File $phpcs_file            The file being scanned.
+	 * @param int  $doc_block_start_token The token index where the docblock starts.
+	 * @param int  $doc_block_end_token   The token index where the docblock ends.
 	 * @return false|int The token index of the version tag within the docblock if found, false otherwise.
 	 */
 	protected static function find_version_tag_token( File $phpcs_file, $doc_block_start_token, $doc_block_end_token ) {
