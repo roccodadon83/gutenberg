@@ -17,8 +17,7 @@ use PHPCSUtils\Utils\FunctionDeclarations;
 use PHPCSUtils\Utils\GetTokensAsString;
 use PHPCSUtils\Utils\ObjectDeclarations;
 use PHPCSUtils\Utils\Scopes;
-use WordPressCS\WordPress\Helpers\WPHookHelper;
-
+use PHPCSUtils\Utils\Variables;
 
 /**
  * This sniff ensures that PHP functions have a valid `@since` tag in the docblock.
@@ -105,7 +104,12 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		// The content of the current token.
 		$hook_function = $tokens[ $stack_pointer ]['content'];
 
-		$hook_functions = array_keys( WPHookHelper::get_functions( false ) );
+		$hook_functions = array(
+			'do_action',
+			'do_action_ref_array',
+			'apply_filters',
+			'apply_filters_ref_array',
+		);
 
 		// Check if the current token content is one of the filter functions.
 		if ( ! in_array( $hook_function, $hook_functions, true ) ) {
@@ -220,6 +224,15 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		);
 
 		$violation_code = 'missingSinceTag';
+
+		$scope_modifier = Variables::getMemberProperties( $phpcs_file, $stack_pointer )['scope'];
+		if ( ( $scope_modifier === 'protected'
+		       && $this->minimumVisibility === 'public' )
+		     || ( $scope_modifier === 'private'
+		          && ( $this->minimumVisibility === 'public' || $this->minimumVisibility === 'protected' ) )
+		) {
+			return;
+		}
 
 		$docblock = static::find_docblock( $phpcs_file, $stack_pointer );
 		if ( false === $docblock ) {
