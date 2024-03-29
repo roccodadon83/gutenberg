@@ -118,7 +118,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 	 * Processes a token representing a function call that invokes a WordPress hook,
 	 * checking for a missing `@since` tag in its docblock.
 	 *
-	 * @param File $phpcs_file   The file being scanned.
+	 * @param File $phpcs_file    The file being scanned.
 	 * @param int  $stack_pointer The position of the hook token in the stack.
 	 */
 	protected function process_hook( File $phpcs_file, $stack_pointer ) {
