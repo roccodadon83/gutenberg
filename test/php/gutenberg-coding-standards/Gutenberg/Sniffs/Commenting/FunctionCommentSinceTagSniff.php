@@ -34,6 +34,12 @@ class FunctionCommentSinceTagSniff implements Sniff {
 	 */
 	public $minimumVisibility = 'private';
 
+	/**
+	 * A map of tokens representing an object-oriented programming structure to their human-readable names.
+	 * This property helps in identifying different OO structures such as classes, interfaces, traits, and enums.
+	 *
+	 * @var array
+	 */
 	protected static $ooTokens = array(
 		T_CLASS     => array(
 			'name' => 'class',
@@ -93,7 +99,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 			return;
 		}
 
-		if ( in_array( $token['code'], array_keys( static::$ooTokens ), true ) ) {
+		if ( isset( static::$ooTokens[ $token['code'] ] ) ) {
 			$this->process_oo_token( $phpcsFile, $stackPtr );
 			return;
 		}
@@ -179,6 +185,13 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		);
 	}
 
+	/**
+	 * Processes a token representing an object-oriented programming structure
+	 * like a class, interface, trait, or enum to check for a missing `@since` tag in its docblock.
+	 *
+	 * @param File $phpcs_file    The file being scanned.
+	 * @param int  $stack_pointer The position of the OO token in the stack.
+	 */
 	protected function process_oo_token( File $phpcs_file, $stack_pointer ) {
 		$tokens     = $phpcs_file->getTokens();
 		$token_type = static::$ooTokens[ $tokens[ $stack_pointer ]['code'] ]['name'];
