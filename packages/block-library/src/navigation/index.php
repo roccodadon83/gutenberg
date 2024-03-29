@@ -7,6 +7,8 @@
 
 /**
  * Helper functions used to render the navigation block.
+ *
+ * @since 6.5.0
  */
 class WP_Navigation_Block_Renderer {
 
@@ -630,6 +632,8 @@ class WP_Navigation_Block_Renderer {
 
 	/**
 	 * Renders the navigation block.
+	 *
+	 * @since 6.5.0
 	 *
 	 * @param array    $attributes The block attributes.
 	 * @param string   $content    The saved content.
@@ -1603,7 +1607,9 @@ function block_core_navigation_insert_hooked_blocks_into_rest_response( $respons
 	// Remove mock Navigation block wrapper.
 	$content = block_core_navigation_remove_serialized_parent_block( $content );
 
-	$response->data['content']['raw']      = $content;
+	$response->data['content']['raw'] = $content;
+
+	/** This filter is documented in wp-includes/post-template.php */
 	$response->data['content']['rendered'] = apply_filters( 'the_content', $content );
 
 	return $response;
