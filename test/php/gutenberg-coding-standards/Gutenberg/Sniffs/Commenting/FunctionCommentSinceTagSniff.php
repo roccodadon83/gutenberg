@@ -87,7 +87,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		}
 
 		if ( Scopes::isOOProperty( $phpcsFile, $stackPtr ) ) {
-			$this->process_class_property_token( $phpcsFile, $stackPtr );
+			$this->process_property_token( $phpcsFile, $stackPtr );
 		}
 	}
 
@@ -211,7 +211,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 	 * @param File $phpcs_file   The file being scanned.
 	 * @param int $stack_pointer The position of the object-oriented property token in the stack.
 	 */
-	protected function process_class_property_token( File $phpcs_file, $stack_pointer ) {
+	protected function process_property_token( File $phpcs_file, $stack_pointer ) {
 		$tokens = $phpcs_file->getTokens();
 
 		$property_name                   = $tokens[ $stack_pointer ]['content'];
