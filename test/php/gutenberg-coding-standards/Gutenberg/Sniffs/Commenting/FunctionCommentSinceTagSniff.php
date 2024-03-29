@@ -36,11 +36,11 @@ class FunctionCommentSinceTagSniff implements Sniff {
 
 	/**
 	 * A map of tokens representing an object-oriented programming structure to their human-readable names.
-	 * This property helps in identifying different OO structures such as classes, interfaces, traits, and enums.
+	 * This map helps in identifying different OO structures such as classes, interfaces, traits, and enums.
 	 *
 	 * @var array
 	 */
-	protected static $ooTokens = array(
+	protected static $oo_tokens = array(
 		T_CLASS     => array(
 			'name' => 'class',
 		),
@@ -75,7 +75,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 				T_VARIABLE,
 				T_STRING,
 			),
-			array_keys( static::$ooTokens )
+			array_keys( static::$oo_tokens )
 		);
 	}
 
@@ -99,7 +99,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 			return;
 		}
 
-		if ( isset( static::$ooTokens[ $token['code'] ] ) ) {
+		if ( isset( static::$oo_tokens[ $token['code'] ] ) ) {
 			$this->process_oo_token( $phpcsFile, $stackPtr );
 			return;
 		}
@@ -194,7 +194,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 	 */
 	protected function process_oo_token( File $phpcs_file, $stack_pointer ) {
 		$tokens     = $phpcs_file->getTokens();
-		$token_type = static::$ooTokens[ $tokens[ $stack_pointer ]['code'] ]['name'];
+		$token_type = static::$oo_tokens[ $tokens[ $stack_pointer ]['code'] ]['name'];
 
 		$token_name                      = ObjectDeclarations::getName( $phpcs_file, $stack_pointer );
 		$missing_since_tag_error_message = sprintf(
@@ -312,7 +312,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		$is_oo_method  = Scopes::isOOMethod( $phpcs_file, $stack_pointer );
 		$function_name = ObjectDeclarations::getName( $phpcs_file, $stack_pointer );
 
-		$violation_code = 'missingSinceTag';
+		$violation_code = 'MissingFunctionSinceTag';
 
 		if ( $is_oo_method ) {
 			$scope_modifier = FunctionDeclarations::getProperties( $phpcs_file, $stack_pointer )['scope'];
@@ -324,7 +324,8 @@ class FunctionCommentSinceTagSniff implements Sniff {
 				return;
 			}
 
-			$function_name = ObjectDeclarations::getName( $phpcs_file, $oo_token ) . '::' . $function_name;
+			$violation_code = 'MissingMethodSinceTag';
+			$function_name  = ObjectDeclarations::getName( $phpcs_file, $oo_token ) . '::' . $function_name;
 		}
 
 		$missing_since_tag_error_message = sprintf(
