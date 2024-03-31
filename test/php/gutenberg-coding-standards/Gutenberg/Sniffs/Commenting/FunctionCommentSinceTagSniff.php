@@ -127,7 +127,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		// The content of the current token.
 		$hook_function = $tokens[ $stack_pointer ]['content'];
 
-		$hook_functions = array(
+		$hook_invoking_functions = array(
 			'do_action',
 			'do_action_ref_array',
 			'apply_filters',
@@ -135,7 +135,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		);
 
 		// Check if the current token content is one of the filter functions.
-		if ( ! in_array( $hook_function, $hook_functions, true ) ) {
+		if ( ! in_array( $hook_function, $hook_invoking_functions, true ) ) {
 			// Not a hook.
 			return;
 		}
