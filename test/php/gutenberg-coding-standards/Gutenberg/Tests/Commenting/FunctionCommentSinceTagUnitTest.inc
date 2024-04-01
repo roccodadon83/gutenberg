@@ -118,7 +118,6 @@ class Foo {
 	}
 
 	private function corge() {
-
 	}
 }
 
