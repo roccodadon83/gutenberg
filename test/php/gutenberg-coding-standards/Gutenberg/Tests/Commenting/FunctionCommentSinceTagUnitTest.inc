@@ -6,46 +6,46 @@ function foo() {
 	$result = apply_filters_ref_array( 'some_filter', array() );
 
 	/**
-	 * @version
+	 * @since
 	 * 123
 	 */
 	$result = apply_filters( 'some_filter', array() );
 
 	/**
-	 * @version invalid 123
+	 * @since invalid 123
 	 */
 	$result = apply_filters( 'some_filter', array() );
 
 	/**
-	 * @version 123
+	 * @since 123
 	 */
 	$result = apply_filters( 'some_filter', array() );
 
-	$variable = 'some_value'; // Some comment @version 123
+	$variable = 'some_value'; // Some comment @since 123
 
 	$result = apply_filters( 'some_filter', array() );
 }
 
 /**
- * @version
+ * @since
  * 123
  */
 function bar() {
 }
 
 /**
- * @version invalid 123
+ * @since invalid 123
  */
 function baz() {
 }
 
 /**
- * @version 123
+ * @since 123
  */
 function qux() {
 }
 
-$variable = 'some_value'; // Some comment @version 123
+$variable = 'some_value'; // Some comment @since 123
 
 function quux() {
 }
@@ -62,46 +62,48 @@ class Foo {
 		$result = apply_filters_ref_array( 'some_filter', array() );
 
 		/**
-		 * @version
+		 * @since
 		 * 123
 		 */
 		$result = apply_filters( 'some_filter', array() );
 
 		/**
-		 * @version invalid 123
+		 * @since invalid 123
 		 */
 		$result = apply_filters( 'some_filter', array() );
 
 		/**
-		 * @version 123
+		 * @since 123
 		 */
 		$result = apply_filters( 'some_filter', array() );
 
-		$variable = 'some_value'; // Some comment @version 123
+		$variable = 'some_value'; // Some comment @since 123
 
 		$result = apply_filters( 'some_filter', array() );
 	}
 
+	protected function foobar_1() {}
+
 	/**
-	 * @version
+	 * @since
 	 * 123
 	 */
 	public function bar() {
 	}
 
 	/**
-	 * @version invalid 123
+	 * @since invalid 123
 	 */
 	public function baz() {
 	}
 
 	/**
-	 * @version 123
+	 * @since 123
 	 */
 	protected function qux() {
 	}
 
-	// Some comment @version 123
+	// Some comment @since 123
 
 	public function quux() {
 		$result = array_map( function ( $value ) {
@@ -115,25 +117,25 @@ class Foo {
 }
 
 /**
- * @version
+ * @since
  * 123
  */
 class Foo_1 {
 }
 
 /**
- * @version invalid 123
+ * @since invalid 123
  */
 class Foo_2 {
 }
 
 /**
- * @version 123
+ * @since 123
  */
 class Foo_3 {
 }
 
-$variable = 'some_value'; // Some comment @version 123
+$variable = 'some_value'; // Some comment @since 123
 
 class Foo_4 {
 }
@@ -146,46 +148,46 @@ abstract class Bar {
 		$result = apply_filters_ref_array( 'some_filter', array() );
 
 		/**
-		 * @version
+		 * @since
 		 * 123
 		 */
 		$result = apply_filters( 'some_filter', array() );
 
 		/**
-		 * @version invalid 123
+		 * @since invalid 123
 		 */
 		$result = apply_filters( 'some_filter', array() );
 
 		/**
-		 * @version 123
+		 * @since 123
 		 */
 		$result = apply_filters( 'some_filter', array() );
 
-		$variable = 'some_value'; // Some comment @version 123
+		$variable = 'some_value'; // Some comment @since 123
 
 		$result = apply_filters( 'some_filter', array() );
 	}
 
 	/**
-	 * @version
+	 * @since
 	 * 123
 	 */
 	public function bar() {
 	}
 
 	/**
-	 * @version invalid 123
+	 * @since invalid 123
 	 */
 	public function baz() {
 	}
 
 	/**
-	 * @version 123
+	 * @since 123
 	 */
 	protected function qux() {
 	}
 
-	// Some comment @version 123
+	// Some comment @since 123
 
 	public function quux() {
 		$result = array_map( function ( $value ) {
@@ -198,25 +200,25 @@ abstract class Bar {
 }
 
 /**
- * @version
+ * @since
  * 123
  */
 class Bar_1 {
 }
 
 /**
- * @version invalid 123
+ * @since invalid 123
  */
 class Bar_2 {
 }
 
 /**
- * @version 123
+ * @since 123
  */
 class Bar_3 {
 }
 
-$variable = 'some_value'; // Some comment @version 123
+$variable = 'some_value'; // Some comment @since 123
 
 class Bar_4 {
 }
@@ -229,46 +231,46 @@ Trait Baz {
 		$result = apply_filters_ref_array( 'some_filter', array() );
 
 		/**
-		 * @version
+		 * @since
 		 * 123
 		 */
 		$result = apply_filters( 'some_filter', array() );
 
 		/**
-		 * @version invalid 123
+		 * @since invalid 123
 		 */
 		$result = apply_filters( 'some_filter', array() );
 
 		/**
-		 * @version 123
+		 * @since 123
 		 */
 		$result = apply_filters( 'some_filter', array() );
 
-		$variable = 'some_value'; // Some comment @version 123
+		$variable = 'some_value'; // Some comment @since 123
 
 		$result = apply_filters( 'some_filter', array() );
 	}
 
 	/**
-	 * @version
+	 * @since
 	 * 123
 	 */
 	public function bar() {
 	}
 
 	/**
-	 * @version invalid 123
+	 * @since invalid 123
 	 */
 	public function baz() {
 	}
 
 	/**
-	 * @version 123
+	 * @since 123
 	 */
 	protected function qux() {
 	}
 
-	// Some comment @version 123
+	// Some comment @since 123
 
 	public function quux() {
 		$result = array_map( function ( $value ) {
@@ -281,25 +283,25 @@ Trait Baz {
 }
 
 /**
- * @version
+ * @since
  * 123
  */
 class Baz_1 {
 }
 
 /**
- * @version invalid 123
+ * @since invalid 123
  */
 class Baz_2 {
 }
 
 /**
- * @version 123
+ * @since 123
  */
 class Baz_3 {
 }
 
-$variable = 'some_value'; // Some comment @version 123
+$variable = 'some_value'; // Some comment @since 123
 
 class Baz_4 {
 }
@@ -308,22 +310,22 @@ interface Qux {
 	public function foobar();
 
 	/**
-	 * @version
+	 * @since
 	 * 123
 	 */
 	public function bar();
 
 	/**
-	 * @version invalid 123
+	 * @since invalid 123
 	 */
 	public function baz();
 
 	/**
-	 * @version 123
+	 * @since 123
 	 */
 	protected function qux();
 
-	// Some comment @version 123
+	// Some comment @since 123
 
 	public function quux();
 
@@ -332,25 +334,25 @@ interface Qux {
 }
 
 /**
- * @version
+ * @since
  * 123
  */
 class Qux_1 {
 }
 
 /**
- * @version invalid 123
+ * @since invalid 123
  */
 class Qux_2 {
 }
 
 /**
- * @version 123
+ * @since 123
  */
 class Qux_3 {
 }
 
-$variable = 'some_value'; // Some comment @version 123
+$variable = 'some_value'; // Some comment @since 123
 
 class Qux_4 {
 }
@@ -361,21 +363,21 @@ $result = apply_filters( 'some_filter', array() );
 $result = apply_filters_ref_array( 'some_filter', array() );
 
 /**
- * @version
+ * @since
  * 123
  */
 $result = apply_filters( 'some_filter', array() );
 
 /**
- * @version invalid 123
+ * @since invalid 123
  */
 $result = apply_filters( 'some_filter', array() );
 
 /**
- * @version 123
+ * @since 123
  */
 $result = apply_filters( 'some_filter', array() );
 
-$variable = 'some_value'; // Some comment @version 123
+$variable = 'some_value'; // Some comment @since 123
 
 $result = apply_filters( 'some_filter', array() );
