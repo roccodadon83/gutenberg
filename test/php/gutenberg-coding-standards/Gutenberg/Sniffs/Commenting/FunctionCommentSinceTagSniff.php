@@ -141,7 +141,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		}
 
 		$missing_since_tag_error_message = sprintf(
-			'@since tag is missing for the "%s" hook function.',
+			'@since tag is missing for the "%s()" hook function.',
 			$hook_function
 		);
 
@@ -163,7 +163,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 				return;
 			}
 
-			$phpcs_file->addError( $missing_since_tag_error_message, $doc_block_start_token, $violation_code );
+			$phpcs_file->addError( $missing_since_tag_error_message, $stack_pointer, $violation_code );
 			return;
 		}
 
