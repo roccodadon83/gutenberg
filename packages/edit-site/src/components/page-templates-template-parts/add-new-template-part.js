@@ -37,7 +37,10 @@ export default function AddNewTemplatePart() {
 
 	return (
 		<>
-			<Button variant="primary" onClick={ () => setIsModalOpen( true ) }>
+			<Button
+				variant="secondary"
+				onClick={ () => setIsModalOpen( true ) }
+			>
 				{ postType.labels.add_new_item }
 			</Button>
 			{ isModalOpen && (

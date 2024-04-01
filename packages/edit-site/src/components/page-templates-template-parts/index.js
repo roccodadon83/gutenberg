@@ -385,7 +385,7 @@ export default function PageTemplatesTemplateParts( { postType } ) {
 					<AddNewTemplate
 						templateType={ postType }
 						showIcon={ false }
-						toggleProps={ { variant: 'primary' } }
+						toggleProps={ { variant: 'secondary' } }
 					/>
 				) : (
 					<AddNewTemplatePart />
