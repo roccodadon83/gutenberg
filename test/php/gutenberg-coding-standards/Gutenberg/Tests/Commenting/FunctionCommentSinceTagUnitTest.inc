@@ -21,7 +21,7 @@ function foo() {
 	 */
 	$result = apply_filters( 'some_filter', array() );
 
-	$variable = 'some_value'; // Some comment @since 123
+	$variable = 'some_value'; /** Some comment @since 123 */
 
 	$result = apply_filters( 'some_filter', array() );
 }
@@ -45,7 +45,7 @@ function baz() {
 function qux() {
 }
 
-$variable = 'some_value'; // Some comment @since 123
+$variable = 'some_value'; /** Some comment @since 123 */
 
 function quux() {
 }
@@ -77,7 +77,7 @@ class Foo {
 		 */
 		$result = apply_filters( 'some_filter', array() );
 
-		$variable = 'some_value'; // Some comment @since 123
+		$variable = 'some_value'; /** Some comment @since 123 */
 
 		$result = apply_filters( 'some_filter', array() );
 	}
@@ -135,7 +135,7 @@ class Foo_2 {
 class Foo_3 {
 }
 
-$variable = 'some_value'; // Some comment @since 123
+$variable = 'some_value'; /** Some comment @since 123 */
 
 class Foo_4 {
 }
@@ -163,7 +163,7 @@ abstract class Bar {
 		 */
 		$result = apply_filters( 'some_filter', array() );
 
-		$variable = 'some_value'; // Some comment @since 123
+		$variable = 'some_value'; /** Some comment @since 123 */
 
 		$result = apply_filters( 'some_filter', array() );
 	}
@@ -218,7 +218,7 @@ class Bar_2 {
 class Bar_3 {
 }
 
-$variable = 'some_value'; // Some comment @since 123
+$variable = 'some_value'; /** Some comment @since 123 */
 
 class Bar_4 {
 }
@@ -246,7 +246,7 @@ Trait Baz {
 		 */
 		$result = apply_filters( 'some_filter', array() );
 
-		$variable = 'some_value'; // Some comment @since 123
+		$variable = 'some_value'; /** Some comment @since 123 */
 
 		$result = apply_filters( 'some_filter', array() );
 	}
@@ -301,7 +301,7 @@ class Baz_2 {
 class Baz_3 {
 }
 
-$variable = 'some_value'; // Some comment @since 123
+$variable = 'some_value'; /** Some comment @since 123 */
 
 class Baz_4 {
 }
@@ -352,7 +352,7 @@ class Qux_2 {
 class Qux_3 {
 }
 
-$variable = 'some_value'; // Some comment @since 123
+$variable = 'some_value'; /** Some comment @since 123 */
 
 class Qux_4 {
 }
@@ -378,6 +378,6 @@ $result = apply_filters( 'some_filter', array() );
  */
 $result = apply_filters( 'some_filter', array() );
 
-$variable = 'some_value'; // Some comment @since 123
+$variable = 'some_value'; /** Some comment @since 123 */$
 
 $result = apply_filters( 'some_filter', array() );
