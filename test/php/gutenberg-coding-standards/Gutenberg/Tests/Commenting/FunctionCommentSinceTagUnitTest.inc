@@ -119,6 +119,8 @@ class Foo {
 
 	private function corge() {
 	}
+
+	function no_visibility_modifier() {}
 }
 
 /**
@@ -176,6 +178,8 @@ abstract class Bar {
 		$result = apply_filters( 'some_filter', array() );
 	}
 
+	abstract protected function foo_abstract();
+
 	/**
 	 * @since
 	 * 123
@@ -205,6 +209,8 @@ abstract class Bar {
 
 	private function corge() {
 	}
+
+	function no_visibility_modifier() {}
 }
 
 /**
@@ -291,6 +297,8 @@ Trait Baz {
 
 	private function corge() {
 	}
+
+	function no_visibility_modifier() {}
 }
 
 /**
@@ -334,14 +342,11 @@ interface Qux {
 	/**
 	 * @since 123
 	 */
-	protected function qux();
+	public function qux();
 
 	/** Some comment @since 123 */
 
 	public function quux();
-
-	private function corge() {
-	}
 }
 
 /**
