@@ -103,7 +103,7 @@ class Foo {
 	protected function qux() {
 	}
 
-	// Some comment @since 123
+	/** Some comment @since 123 */
 
 	public function quux() {
 		$result = array_map( function ( $value ) {
@@ -187,7 +187,7 @@ abstract class Bar {
 	protected function qux() {
 	}
 
-	// Some comment @since 123
+	/** Some comment @since 123 */
 
 	public function quux() {
 		$result = array_map( function ( $value ) {
@@ -270,7 +270,7 @@ Trait Baz {
 	protected function qux() {
 	}
 
-	// Some comment @since 123
+	/** Some comment @since 123 */
 
 	public function quux() {
 		$result = array_map( function ( $value ) {
@@ -325,7 +325,7 @@ interface Qux {
 	 */
 	protected function qux();
 
-	// Some comment @since 123
+	/** Some comment @since 123 */
 
 	public function quux();
 
