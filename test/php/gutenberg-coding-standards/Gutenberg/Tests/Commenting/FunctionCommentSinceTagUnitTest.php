@@ -24,11 +24,7 @@ final class FunctionCommentSinceTagUnitTest extends AbstractSniffUnitTest {
 	 */
 	public function getErrorList() {
 		// The sniff only supports PHP functions for now; it ignores class, trait, and interface methods.
-		return array(
-			9  => 1,
-			19 => 1,
-			24 => 1,
-		);
+		return array();
 	}
 
 	/**
