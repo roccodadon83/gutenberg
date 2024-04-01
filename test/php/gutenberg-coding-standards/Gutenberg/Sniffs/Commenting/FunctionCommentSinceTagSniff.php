@@ -193,8 +193,9 @@ class FunctionCommentSinceTagSniff implements Sniff {
 	 * @param int  $stack_pointer The position of the OO token in the stack.
 	 */
 	protected function process_oo_token( File $phpcs_file, $stack_pointer ) {
-		$tokens     = $phpcs_file->getTokens();
-		$token_type = static::$oo_tokens[ $tokens[ $stack_pointer ]['code'] ]['name'];
+		$tokens                 = $phpcs_file->getTokens();
+		$token_type             = static::$oo_tokens[ $tokens[ $stack_pointer ]['code'] ]['name'];
+		$capitalized_token_type = ucfirst( $token_type );
 
 		$token_name                      = ObjectDeclarations::getName( $phpcs_file, $stack_pointer );
 		$missing_since_tag_error_message = sprintf(
@@ -203,7 +204,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 			$token_type
 		);
 
-		$violation_code = 'Missing' . ucfirst( $token_type ) . 'SinceTag';
+		$violation_code = 'Missing' . $capitalized_token_type . 'SinceTag';
 
 		$docblock = static::find_docblock( $phpcs_file, $stack_pointer );
 		if ( false === $docblock ) {
@@ -229,7 +230,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		$phpcs_file->addError(
 			'Invalid @since version value for the "%s()" hook: "%s". Version value must be greater than or equal to 0.0.1.',
 			$version_token,
-			'Invalid' . ucfirst( $token_type ) . 'SinceTagVersionValue',
+			'Invalid' . $capitalized_token_type . 'SinceTagVersionValue',
 			array(
 				$token_name,
 				$version_value,
