@@ -24,6 +24,9 @@ function foo() {
 	$variable = 'some_value'; /** Some comment @since 123 */
 
 	$result = apply_filters( 'some_filter', array() );
+
+	/** @var This filter is documented in foo.php */
+	$result = apply_filters( 'some_filter', array() );
 }
 
 /**
@@ -79,6 +82,9 @@ class Foo {
 
 		$variable = 'some_value'; /** Some comment @since 123 */
 
+		$result = apply_filters( 'some_filter', array() );
+
+		/** @var This filter is documented in foo.php */
 		$result = apply_filters( 'some_filter', array() );
 	}
 
@@ -166,6 +172,9 @@ abstract class Bar {
 		$variable = 'some_value'; /** Some comment @since 123 */
 
 		$result = apply_filters( 'some_filter', array() );
+
+		/** @var This filter is documented in foo.php */
+		$result = apply_filters( 'some_filter', array() );
 	}
 
 	/**
@@ -248,6 +257,9 @@ Trait Baz {
 
 		$variable = 'some_value'; /** Some comment @since 123 */
 
+		$result = apply_filters( 'some_filter', array() );
+
+		/** @var This filter is documented in foo.php */
 		$result = apply_filters( 'some_filter', array() );
 	}
 
@@ -380,4 +392,7 @@ $result = apply_filters( 'some_filter', array() );
 
 $variable = 'some_value'; /** Some comment @since 123 */$
 
+$result = apply_filters( 'some_filter', array() );
+
+/** @var This filter is documented in foo.php */
 $result = apply_filters( 'some_filter', array() );
