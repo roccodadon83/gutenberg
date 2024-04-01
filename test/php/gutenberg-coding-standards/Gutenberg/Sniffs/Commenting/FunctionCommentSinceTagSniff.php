@@ -141,7 +141,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		}
 
 		$missing_since_tag_error_message = sprintf(
-			'@since tag is missing for the "%s" hook.',
+			'@since tag is missing for the "%s" hook function.',
 			$hook_function
 		);
 
@@ -228,7 +228,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		}
 
 		$phpcs_file->addError(
-			'Invalid @since version value for the "%s()" hook: "%s". Version value must be greater than or equal to 0.0.1.',
+			'Invalid @since version value for the "%s" %s. Version value must be greater than or equal to 0.0.1.',
 			$version_token,
 			'Invalid' . $capitalized_token_type . 'SinceTagVersionValue',
 			array(
