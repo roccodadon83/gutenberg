@@ -127,7 +127,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		// The content of the current token.
 		$hook_function = $tokens[ $stack_pointer ]['content'];
 
-		$hook_invoking_functions = array(
+		$hook_invocation_functions = array(
 			'do_action',
 			'do_action_ref_array',
 			'apply_filters',
@@ -135,7 +135,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		);
 
 		// Check if the current token content is one of the filter functions.
-		if ( ! in_array( $hook_function, $hook_invoking_functions, true ) ) {
+		if ( ! in_array( $hook_function, $hook_invocation_functions, true ) ) {
 			// Not a hook.
 			return;
 		}
@@ -175,7 +175,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 		}
 
 		$phpcs_file->addError(
-			'Invalid @since version value for the "%s()" hook: "%s". Version value must be greater than or equal to 0.0.1.',
+			'Invalid @since version value for the "%s()" hook function: "%s". Version value must be greater than or equal to 0.0.1.',
 			$version_token,
 			'InvalidHookSinceTagVersionValue',
 			array(
