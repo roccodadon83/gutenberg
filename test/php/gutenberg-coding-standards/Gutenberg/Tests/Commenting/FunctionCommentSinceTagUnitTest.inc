@@ -58,6 +58,29 @@ $result = array_map( function ( $value ) {
 }, array( 1, 2, 3, 4, 5 ) );
 
 class Foo {
+
+	/**
+	 * @since
+	 * 123
+	 */
+	public $foo_property;
+
+	/**
+	 * @since invalid 123
+	 */
+	protected $bar_property;
+
+	/**
+	 * @since 123
+	 */
+	public $baz_property;
+
+	public $qux_property = 'some_value'; /** Some comment @since 123 */
+
+	public $quux_property;
+
+	private $corge_property;
+
 	protected function foobar() {
 		$result = do_action( 'some_filter', array() );
 		$result = do_action_ref_array( 'some_filter', array() );
@@ -147,7 +170,30 @@ $variable = 'some_value'; /** Some comment @since 123 */
 class Foo_4 {
 }
 
-abstract class Bar {
+abstract class Bar_Abstract {
+
+	/**
+	 * @since
+	 * 123
+	 */
+	public $foo_property;
+
+	/**
+	 * @since invalid 123
+	 */
+	protected $bar_property;
+
+	/**
+	 * @since 123
+	 */
+	public $baz_property;
+
+	public $qux_property = 'some_value'; /** Some comment @since 123 */
+
+	public $quux_property;
+
+	private $corge_property;
+
 	protected function foobar() {
 		$result = do_action( 'some_filter', array() );
 		$result = do_action_ref_array( 'some_filter', array() );
@@ -238,6 +284,29 @@ class Bar_4 {
 }
 
 Trait Baz {
+
+	/**
+	 * @since
+	 * 123
+	 */
+	public $foo_property;
+
+	/**
+	 * @since invalid 123
+	 */
+	protected $bar_property;
+
+	/**
+	 * @since 123
+	 */
+	public $baz_property;
+
+	public $qux_property = 'some_value'; /** Some comment @since 123 */
+
+	public $quux_property;
+
+	private $corge_property;
+
 	protected function foobar() {
 		$result = do_action( 'some_filter', array() );
 		$result = do_action_ref_array( 'some_filter', array() );
