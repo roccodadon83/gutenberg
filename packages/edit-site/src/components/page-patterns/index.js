@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import classnames from 'classnames';
+
+/**
  * WordPress dependencies
  */
 import {
@@ -30,6 +35,7 @@ import {
 	lockSmall,
 } from '@wordpress/icons';
 import { usePrevious } from '@wordpress/compose';
+import { useEntityRecords } from '@wordpress/core-data';
 
 /**
  * Internal dependencies
@@ -38,6 +44,7 @@ import Page from '../page';
 import {
 	LAYOUT_GRID,
 	LAYOUT_TABLE,
+	LAYOUT_LIST,
 	PATTERN_TYPES,
 	TEMPLATE_PART_POST_TYPE,
 	PATTERN_SYNC_TYPES,
@@ -58,6 +65,7 @@ import { unlock } from '../../lock-unlock';
 import usePatterns from './use-patterns';
 import PatternsHeader from './header';
 import { useLink } from '../routes/link';
+import { useAddedBy } from '../page-templates-template-parts/hooks';
 
 const { ExperimentalBlockEditorProvider, useGlobalStyle } = unlock(
 	blockEditorPrivateApis
@@ -197,6 +205,39 @@ function Preview( { item, categoryId, viewType } ) {
 	);
 }
 
+function Author( { item, viewType } ) {
+	const [ isImageLoaded, setIsImageLoaded ] = useState( false );
+	const { text, icon, imageUrl } = useAddedBy( item.type, item.id );
+	const withIcon = viewType !== LAYOUT_LIST;
+
+	return (
+		<HStack alignment="left" spacing={ 1 }>
+			{ withIcon && imageUrl && (
+				<div
+					className={ classnames(
+						'page-templates-author-field__avatar',
+						{
+							'is-loaded': isImageLoaded,
+						}
+					) }
+				>
+					<img
+						onLoad={ () => setIsImageLoaded( true ) }
+						alt=""
+						src={ imageUrl }
+					/>
+				</div>
+			) }
+			{ withIcon && ! imageUrl && (
+				<div className="page-templates-author-field__icon">
+					<Icon icon={ icon } />
+				</div>
+			) }
+			<span className="page-templates-author-field__name">{ text }</span>
+		</HStack>
+	);
+}
+
 function Title( { item, categoryId } ) {
 	const isUserPattern = item.type === PATTERN_TYPES.user;
 	const isNonUserPattern = item.type === PATTERN_TYPES.theme;
@@ -285,6 +326,24 @@ export default function DataviewsPatterns() {
 			syncStatus: viewSyncStatus,
 		}
 	);
+
+	const { records } = useEntityRecords( 'postType', TEMPLATE_PART_POST_TYPE, {
+		per_page: -1,
+	} );
+	const authors = useMemo( () => {
+		if ( ! records ) {
+			return EMPTY_ARRAY;
+		}
+		const authorsSet = new Set();
+		records.forEach( ( template ) => {
+			authorsSet.add( template.author_text );
+		} );
+		return Array.from( authorsSet ).map( ( author ) => ( {
+			value: author,
+			label: author,
+		} ) );
+	}, [ records ] );
+
 	const fields = useMemo( () => {
 		const _fields = [
 			{
@@ -309,6 +368,7 @@ export default function DataviewsPatterns() {
 				enableHiding: false,
 			},
 		];
+
 		if ( type === PATTERN_TYPES.theme ) {
 			_fields.push( {
 				header: __( 'Sync Status' ),
@@ -334,9 +394,26 @@ export default function DataviewsPatterns() {
 				},
 				enableSorting: false,
 			} );
+		} else if ( type === TEMPLATE_PART_POST_TYPE ) {
+			_fields.push( {
+				header: __( 'Author' ),
+				id: 'author',
+				getValue: ( { item } ) => item.templatePart.author_text,
+				render: ( { item } ) => {
+					return <Author viewType={ view.type } item={ item } />;
+				},
+				type: ENUMERATION_TYPE,
+				elements: authors,
+				filterBy: {
+					isPrimary: true,
+				},
+				width: '1%',
+			} );
 		}
+
 		return _fields;
-	}, [ view.type, categoryId, type ] );
+	}, [ view.type, categoryId, type, authors ] );
+
 	// Reset the page number when the category changes.
 	useEffect( () => {
 		if ( previousCategoryId !== categoryId ) {
@@ -344,13 +421,15 @@ export default function DataviewsPatterns() {
 		}
 	}, [ categoryId, previousCategoryId ] );
 	const { data, paginationInfo } = useMemo( () => {
-		// Since filters are applied server-side,
-		// we need to remove them from the view
+		// Search is managed server-side as well as filters for patterns.
+		// However, the author filter in template parts is done client-side.
 		const viewWithoutFilters = { ...view };
 		delete viewWithoutFilters.search;
-		viewWithoutFilters.filters = [];
+		if ( type !== TEMPLATE_PART_POST_TYPE ) {
+			viewWithoutFilters.filters = [];
+		}
 		return filterSortAndPaginate( patterns, viewWithoutFilters, fields );
-	}, [ patterns, view, fields ] );
+	}, [ patterns, view, fields, type ] );
 
 	const actions = useMemo(
 		() => [
