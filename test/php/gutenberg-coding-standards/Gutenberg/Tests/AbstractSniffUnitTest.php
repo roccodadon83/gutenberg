@@ -12,6 +12,7 @@ namespace GutenbergCS\Gutenberg\Tests;
 use PHP_CodeSniffer\Config;
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest as BaseAbstractSniffUnitTest;
 use PHP_CodeSniffer\Ruleset;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 /**
  * Unit test class for the GuardedFunctionAndClassNames sniff.
@@ -40,9 +41,16 @@ abstract class AbstractSniffUnitTest extends BaseAbstractSniffUnitTest {
 	 * Sets the parameters for the sniff.
 	 *
 	 * @throws RuntimeException If unable to set the ruleset parameters required for the test.
-	 * @param Ruleset $current_ruleset The current ruleset being tested.
+	 * @param Sniff $sniff The sniff being tested.
 	 */
-	abstract protected function setSniffParameters( Ruleset $current_ruleset );
+	abstract protected function set_sniff_parameters( Sniff $sniff );
+
+	/**
+	 * Returns the fully qualified class name (FQCN) of the sniff.
+	 *
+	 * @return string The fully qualified class name of the sniff.
+	 */
+	abstract protected function get_sniff_fqcn();
 
 	/**
 	 * Prepares the environment before executing tests. Specifically, sets prefixes for the
@@ -57,10 +65,11 @@ abstract class AbstractSniffUnitTest extends BaseAbstractSniffUnitTest {
 	public function setCliValues( $filename, $config ) {
 		parent::setCliValues( $filename, $config );
 
+		$error_message = 'Cannot set sniff parameters required for the unit test.';
 		if ( ! isset( $GLOBALS['PHP_CODESNIFFER_RULESETS']['Gutenberg'] )
 		     || ( ! $GLOBALS['PHP_CODESNIFFER_RULESETS']['Gutenberg'] instanceof Ruleset )
 		) {
-			throw new \RuntimeException( 'Cannot set ruleset parameters required for this test.' );
+			throw new \RuntimeException( $error_message );
 		}
 
 		// Backup the original Ruleset instance.
@@ -69,6 +78,12 @@ abstract class AbstractSniffUnitTest extends BaseAbstractSniffUnitTest {
 		$current_ruleset                                  = clone static::$original_ruleset;
 		$GLOBALS['PHP_CODESNIFFER_RULESETS']['Gutenberg'] = $current_ruleset;
 
-		$this->setSniffParameters( $current_ruleset );
+		$sniff_fqcn = $this->get_sniff_fqcn();
+		if ( ! isset( $current_ruleset->sniffs[ $sniff_fqcn ] ) ) {
+			throw new \RuntimeException( $error_message );
+		}
+
+		$sniff = $current_ruleset->sniffs[ $sniff_fqcn ];
+		$this->set_sniff_parameters( $sniff );
 	}
 }

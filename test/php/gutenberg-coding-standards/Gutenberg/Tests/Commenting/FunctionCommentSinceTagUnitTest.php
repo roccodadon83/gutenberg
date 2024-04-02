@@ -11,7 +11,7 @@ namespace GutenbergCS\Gutenberg\Tests\Commenting;
 
 use GutenbergCS\Gutenberg\Sniffs\Commenting\FunctionCommentSinceTagSniff;
 use GutenbergCS\Gutenberg\Tests\AbstractSniffUnitTest;
-use PHP_CodeSniffer\Ruleset;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 /**
  * Unit test class for the FunctionCommentSinceTagSniff sniff.
@@ -42,19 +42,21 @@ final class FunctionCommentSinceTagUnitTest extends AbstractSniffUnitTest {
 	}
 
 	/**
+	 * Returns the fully qualified class name (FQCN) of the sniff.
+	 *
+	 * @return string The fully qualified class name of the sniff.
+	 */
+	protected function get_sniff_fqcn() {
+		return FunctionCommentSinceTagSniff::class;
+	}
+
+	/**
 	 * Sets the parameters for the sniff.
 	 *
 	 * @throws RuntimeException If unable to set the ruleset parameters required for the test.
-	 * @param Ruleset $current_ruleset The current ruleset being tested.
+	 * @param Sniff $sniff The sniff being tested.
 	 */
-	protected function setSniffParameters( Ruleset $current_ruleset ) {
-		if ( ! isset( $current_ruleset->sniffs[ FunctionCommentSinceTagSniff::class ] )
-		     || ( ! $current_ruleset->sniffs[ FunctionCommentSinceTagSniff::class ] instanceof FunctionCommentSinceTagSniff )
-		) {
-			throw new \RuntimeException( 'Cannot set ruleset parameters required for this test.' );
-		}
-
-		$sniff                    = $current_ruleset->sniffs[ FunctionCommentSinceTagSniff::class ];
+	public function set_sniff_parameters( Sniff $sniff ) {
 		$sniff->minimumVisibility = 'protected';
 	}
 }

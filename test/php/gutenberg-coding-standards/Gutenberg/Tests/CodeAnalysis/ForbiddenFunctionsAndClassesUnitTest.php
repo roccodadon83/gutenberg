@@ -11,7 +11,7 @@ namespace GutenbergCS\Gutenberg\Tests\CodeAnalysis;
 
 use GutenbergCS\Gutenberg\Sniffs\CodeAnalysis\ForbiddenFunctionsAndClassesSniff;
 use GutenbergCS\Gutenberg\Tests\AbstractSniffUnitTest;
-use PHP_CodeSniffer\Ruleset;
+use PHP_CodeSniffer\Sniffs\Sniff;
 
 /**
  * Unit test class for the ForbiddenFunctionsAndClassesSniff sniff.
@@ -65,19 +65,21 @@ final class ForbiddenFunctionsAndClassesUnitTest extends AbstractSniffUnitTest {
 	}
 
 	/**
+	 * Returns the fully qualified class name (FQCN) of the sniff.
+	 *
+	 * @return string The fully qualified class name of the sniff.
+	 */
+	protected function get_sniff_fqcn() {
+		return ForbiddenFunctionsAndClassesSniff::class;
+	}
+
+	/**
 	 * Sets the parameters for the sniff.
 	 *
 	 * @throws RuntimeException If unable to set the ruleset parameters required for the test.
-	 * @param Ruleset $current_ruleset The current ruleset being tested.
+	 * @param Sniff $sniff The sniff being tested.
 	 */
-	public function setSniffParameters( Ruleset $current_ruleset ) {
-		if ( ! isset( $current_ruleset->sniffs[ ForbiddenFunctionsAndClassesSniff::class ] )
-		     || ( ! $current_ruleset->sniffs[ ForbiddenFunctionsAndClassesSniff::class ] instanceof ForbiddenFunctionsAndClassesSniff )
-		) {
-			throw new \RuntimeException( 'Cannot set ruleset parameters required for this test.' );
-		}
-
-		$sniff                      = $current_ruleset->sniffs[ ForbiddenFunctionsAndClassesSniff::class ];
+	public function set_sniff_parameters( Sniff $sniff ) {
 		$sniff->forbidden_functions = array(
 			'[Gg]utenberg.*',
 		);
