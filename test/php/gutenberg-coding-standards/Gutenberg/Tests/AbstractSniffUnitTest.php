@@ -41,6 +41,7 @@ abstract class AbstractSniffUnitTest extends BaseAbstractSniffUnitTest {
 	 * Sets the parameters for the sniff.
 	 *
 	 * @throws RuntimeException If unable to set the ruleset parameters required for the test.
+	 *
 	 * @param Sniff $sniff The sniff being tested.
 	 */
 	abstract protected function set_sniff_parameters( Sniff $sniff );
