@@ -24,8 +24,12 @@ final class FunctionCommentSinceTagUnitTest extends AbstractSniffUnitTest {
 	 * @return array <int line number> => <int number of errors>
 	 */
 	public function getErrorList() {
-		// The sniff only supports PHP functions for now; it ignores class, trait, and interface methods.
-		return array();
+		return array(
+			7  => 1,
+			17 => 1,
+			25 => 1,
+			35 => 1,
+		);
 	}
 
 	/**
@@ -50,7 +54,7 @@ final class FunctionCommentSinceTagUnitTest extends AbstractSniffUnitTest {
 			throw new \RuntimeException( 'Cannot set ruleset parameters required for this test.' );
 		}
 
-		$sniff           = $current_ruleset->sniffs[ FunctionCommentSinceTagSniff::class ];
+		$sniff                    = $current_ruleset->sniffs[ FunctionCommentSinceTagSniff::class ];
 		$sniff->minimumVisibility = 'protected';
 	}
 }
