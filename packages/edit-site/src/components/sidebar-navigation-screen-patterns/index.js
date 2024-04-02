@@ -4,7 +4,6 @@
 import {
 	__experimentalItemGroup as ItemGroup,
 	__experimentalItem as Item,
-	__experimentalHeading as Heading,
 } from '@wordpress/components';
 import { getTemplatePartIcon } from '@wordpress/editor';
 import { __ } from '@wordpress/i18n';
@@ -27,59 +26,63 @@ import {
 import usePatternCategories from './use-pattern-categories';
 import useTemplatePartAreas from './use-template-part-areas';
 
-function TemplatePartGroup( { areas, currentArea, currentType } ) {
-	return (
-		<>
-			<div className="edit-site-sidebar-navigation-screen-patterns__group-header">
-				<Heading level={ 2 }>{ __( 'Template parts' ) }</Heading>
-			</div>
-			<ItemGroup className="edit-site-sidebar-navigation-screen-patterns__group">
-				{ Object.entries( areas ).map(
-					( [ area, { label, templateParts } ] ) => (
-						<CategoryItem
-							key={ area }
-							count={ templateParts?.length }
-							icon={ getTemplatePartIcon( area ) }
-							label={ label }
-							id={ area }
-							type={ TEMPLATE_PART_POST_TYPE }
-							isActive={
-								currentArea === area &&
-								currentType === TEMPLATE_PART_POST_TYPE
-							}
-						/>
-					)
-				) }
-			</ItemGroup>
-		</>
-	);
-}
-
-function PatternCategoriesGroup( {
-	categories,
+function CategoriesGroup( {
+	templatePartAreas,
+	patternCategories,
 	currentCategory,
 	currentType,
 } ) {
+	const [ allPatterns, ...otherPatterns ] = patternCategories;
+
 	return (
-		<>
-			<ItemGroup className="edit-site-sidebar-navigation-screen-patterns__group">
-				{ categories.map( ( category ) => (
+		<ItemGroup className="edit-site-sidebar-navigation-screen-patterns__group">
+			{ allPatterns && (
+				<CategoryItem
+					key={ allPatterns.name }
+					count={ allPatterns.count }
+					label={ allPatterns.label }
+					icon={ file }
+					id={ allPatterns.name }
+					type="pattern"
+					isActive={
+						currentCategory === `${ allPatterns.name }` &&
+						( currentType === PATTERN_TYPES.theme ||
+							currentType === PATTERN_TYPES.user )
+					}
+				/>
+			) }
+			{ Object.entries( templatePartAreas ).map(
+				( [ area, { label, templateParts } ] ) => (
 					<CategoryItem
-						key={ category.name }
-						count={ category.count }
-						label={ category.label }
-						icon={ file }
-						id={ category.name }
-						type="pattern"
+						key={ area }
+						count={ templateParts?.length }
+						icon={ getTemplatePartIcon( area ) }
+						label={ label }
+						id={ area }
+						type={ TEMPLATE_PART_POST_TYPE }
 						isActive={
-							currentCategory === `${ category.name }` &&
-							( currentType === PATTERN_TYPES.theme ||
-								currentType === PATTERN_TYPES.user )
+							currentCategory === area &&
+							currentType === TEMPLATE_PART_POST_TYPE
 						}
 					/>
-				) ) }
-			</ItemGroup>
-		</>
+				)
+			) }
+			{ otherPatterns.map( ( category ) => (
+				<CategoryItem
+					key={ category.name }
+					count={ category.count }
+					label={ category.label }
+					icon={ file }
+					id={ category.name }
+					type="pattern"
+					isActive={
+						currentCategory === `${ category.name }` &&
+						( currentType === PATTERN_TYPES.theme ||
+							currentType === PATTERN_TYPES.user )
+					}
+				/>
+			) ) }
+		</ItemGroup>
 	);
 }
 
@@ -118,20 +121,12 @@ export default function SidebarNavigationScreenPatterns() {
 									</Item>
 								</ItemGroup>
 							) }
-							{ hasPatterns && (
-								<PatternCategoriesGroup
-									categories={ patternCategories }
-									currentCategory={ currentCategory }
-									currentType={ currentType }
-								/>
-							) }
-							{ hasTemplateParts && (
-								<TemplatePartGroup
-									areas={ templatePartAreas }
-									currentArea={ currentCategory }
-									currentType={ currentType }
-								/>
-							) }
+							<CategoriesGroup
+								templatePartAreas={ templatePartAreas }
+								patternCategories={ patternCategories }
+								currentCategory={ currentCategory }
+								currentType={ currentType }
+							/>
 						</>
 					) }
 				</>
