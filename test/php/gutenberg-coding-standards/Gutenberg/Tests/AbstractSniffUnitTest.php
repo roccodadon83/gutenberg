@@ -14,9 +14,6 @@ use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest as BaseAbstractSniffUn
 use PHP_CodeSniffer\Ruleset;
 use PHP_CodeSniffer\Sniffs\Sniff;
 
-/**
- * Unit test class for the GuardedFunctionAndClassNames sniff.
- */
 abstract class AbstractSniffUnitTest extends BaseAbstractSniffUnitTest {
 
 	/**
@@ -54,14 +51,12 @@ abstract class AbstractSniffUnitTest extends BaseAbstractSniffUnitTest {
 	abstract protected function get_sniff_fqcn();
 
 	/**
-	 * Prepares the environment before executing tests. Specifically, sets prefixes for the
-	 * GuardedFunctionAndClassNames sniff.This is needed since AbstractSniffUnitTest class
-	 * doesn't apply sniff properties from the Gutenberg/ruleset.xml file.
+	 * Prepares the environment before executing tests. This is needed since
+	 * PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest doesn't apply
+	 * sniff properties from the Gutenberg/ruleset.xml file.
 	 *
 	 * @param string $filename The name of the file being tested.
 	 * @param Config $config   The config data for the run.
-	 *
-	 * @return void
 	 */
 	public function setCliValues( $filename, $config ) {
 		parent::setCliValues( $filename, $config );
