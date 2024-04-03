@@ -87,7 +87,7 @@ function selectExistingMenu( select, ref ) {
 	const { getEntityRecord, getEditedEntityRecord, hasFinishedResolution } =
 		select( coreStore );
 
-	const args = [ 'postType', 'wp_navigation', ref ];
+	const args = [ 'postType', 'wp_navigation', ref, { context: 'view' } ];
 	const navigationMenu = getEntityRecord( ...args );
 	const editedNavigationMenu = getEditedEntityRecord( ...args );
 	const hasResolvedNavigationMenu = hasFinishedResolution(
@@ -95,13 +95,18 @@ function selectExistingMenu( select, ref ) {
 		args
 	);
 
+	// check if editedNavigationMenu is an empty object
+	const menuToUse =
+		editedNavigationMenu && Object.keys( editedNavigationMenu ).length !== 0
+			? editedNavigationMenu
+			: navigationMenu;
+
 	// Only published Navigation posts are considered valid.
 	// Draft Navigation posts are valid only on the editor,
 	// requiring a post update to publish to show in frontend.
 	// To achieve that, index.php must reflect this validation only for published.
 	const isNavigationMenuPublishedOrDraft =
-		editedNavigationMenu.status === 'publish' ||
-		editedNavigationMenu.status === 'draft';
+		menuToUse.status === 'publish' || menuToUse.status === 'draft';
 
 	return {
 		isNavigationMenuResolved: hasResolvedNavigationMenu,
@@ -111,8 +116,6 @@ function selectExistingMenu( select, ref ) {
 
 		// getEditedEntityRecord will return the post regardless of status.
 		// Therefore if the found post is not published then we should ignore it.
-		navigationMenu: isNavigationMenuPublishedOrDraft
-			? editedNavigationMenu
-			: null,
+		navigationMenu: isNavigationMenuPublishedOrDraft ? menuToUse : null,
 	};
 }
