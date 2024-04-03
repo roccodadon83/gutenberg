@@ -68,7 +68,7 @@ abstract class AbstractSniffUnitTest extends BaseAbstractSniffUnitTest {
 
 		$error_message = 'Cannot set sniff parameters required for the unit test.';
 		if ( ! isset( $GLOBALS['PHP_CODESNIFFER_RULESETS']['Gutenberg'] )
-		     || ( ! $GLOBALS['PHP_CODESNIFFER_RULESETS']['Gutenberg'] instanceof Ruleset )
+			|| ( ! $GLOBALS['PHP_CODESNIFFER_RULESETS']['Gutenberg'] instanceof Ruleset )
 		) {
 			throw new \RuntimeException( $error_message );
 		}

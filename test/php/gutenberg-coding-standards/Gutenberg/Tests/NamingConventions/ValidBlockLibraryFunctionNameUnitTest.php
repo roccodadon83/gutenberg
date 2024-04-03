@@ -54,7 +54,7 @@ final class ValidBlockLibraryFunctionNameUnitTest extends AbstractSniffUnitTest 
 	 * Sets the parameters for the sniff.
 	 *
 	 * @throws RuntimeException If unable to set the ruleset parameters required for the test.
-	 * 
+	 *
 	 * @param Sniff $sniff The sniff being tested.
 	 */
 	public function set_sniff_parameters( Sniff $sniff ) {
