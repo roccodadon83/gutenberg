@@ -155,7 +155,7 @@ class FunctionCommentSinceTagSniff implements Sniff {
 
 		list( $doc_block_start_token, $doc_block_end_token ) = $docblock;
 
-		$version_token = static::find_version_tag_token( $phpcs_file, $doc_block_start_token, $doc_block_end_token );
+		$version_token = static::parse_since_tags( $phpcs_file, $doc_block_start_token, $doc_block_end_token );
 		if ( false === $version_token ) {
 			$docblock_content = GetTokensAsString::compact( $phpcs_file, $doc_block_start_token, $doc_block_end_token, false );
 			if ( false !== stripos( $docblock_content, 'This filter is documented in ' ) ) {
@@ -167,22 +167,39 @@ class FunctionCommentSinceTagSniff implements Sniff {
 			return;
 		}
 
-		$version_value = $tokens[ $version_token ]['content'];
+		$version_tags = static::parse_since_tags( $phpcs_file, $doc_block_start_token, $doc_block_end_token );
+		if ( empty( $version_tags ) ) {
+			$docblock_content = GetTokensAsString::compact( $phpcs_file, $doc_block_start_token, $doc_block_end_token, false );
+			if ( false === stripos( $docblock_content, 'This filter is documented in ' ) ) {
+				$phpcs_file->addError( $missing_since_tag_error_message, $stack_pointer, $violation_code );
+			}
 
-		if ( version_compare( $version_value, '0.0.1', '>=' ) ) {
-			// Validate the version value.
+			// The hook is documented elsewhere.
 			return;
 		}
 
-		$phpcs_file->addError(
-			'Invalid @since version value for the "%s()" hook function: "%s". Version value must be greater than or equal to 0.0.1.',
-			$version_token,
-			'InvalidHookSinceTagVersionValue',
-			array(
-				$hook_function,
-				$version_value,
-			)
-		);
+		foreach ( $version_tags as $since_tag_token => $version_value_token ) {
+			if ( null === $version_value_token ) {
+				$phpcs_file->addError( $missing_since_tag_error_message, $since_tag_token, $violation_code );
+				continue;
+			}
+
+			$version_value = $tokens[ $version_value_token ]['content'];
+
+			if ( static::validate_version( $version_value ) ) {
+				continue;
+			}
+
+			$phpcs_file->addError(
+				'Invalid @since version value for the "%s()" hook function: "%s". Version value must be greater than or equal to 0.0.1.',
+				$version_value_token,
+				'InvalidHookSinceTagVersionValue',
+				array(
+					$hook_function,
+					$version_value,
+				)
+			);
+		}
 	}
 
 	/**
@@ -214,28 +231,34 @@ class FunctionCommentSinceTagSniff implements Sniff {
 
 		list( $doc_block_start_token, $doc_block_end_token ) = $docblock;
 
-		$version_token = static::find_version_tag_token( $phpcs_file, $doc_block_start_token, $doc_block_end_token );
-		if ( false === $version_token ) {
+		$version_tags = static::parse_since_tags( $phpcs_file, $doc_block_start_token, $doc_block_end_token );
+		if ( empty( $version_tags ) ) {
 			$phpcs_file->addError( $missing_since_tag_error_message, $stack_pointer, $violation_code );
 			return;
 		}
 
-		$version_value = $tokens[ $version_token ]['content'];
+		foreach ( $version_tags as $since_tag_token => $version_value_token ) {
+			if ( null === $version_value_token ) {
+				$phpcs_file->addError( $missing_since_tag_error_message, $since_tag_token, $violation_code );
+				continue;
+			}
 
-		if ( version_compare( $version_value, '0.0.1', '>=' ) ) {
-			// Validate the version value.
-			return;
+			$version_value = $tokens[ $version_value_token ]['content'];
+
+			if ( static::validate_version( $version_value ) ) {
+				continue;
+			}
+
+			$phpcs_file->addError(
+				'Invalid @since version value for the "%s" %s. Version value must be greater than or equal to 0.0.1.',
+				$version_value_token,
+				'Invalid' . $capitalized_token_type . 'SinceTagVersionValue',
+				array(
+					$token_name,
+					$version_value,
+				)
+			);
 		}
-
-		$phpcs_file->addError(
-			'Invalid @since version value for the "%s" %s. Version value must be greater than or equal to 0.0.1.',
-			$version_token,
-			'Invalid' . $capitalized_token_type . 'SinceTagVersionValue',
-			array(
-				$token_name,
-				$version_value,
-			)
-		);
 	}
 
 	/**
@@ -275,29 +298,35 @@ class FunctionCommentSinceTagSniff implements Sniff {
 
 		list( $doc_block_start_token, $doc_block_end_token ) = $docblock;
 
-		$version_token = static::find_version_tag_token( $phpcs_file, $doc_block_start_token, $doc_block_end_token );
-		if ( false === $version_token ) {
+		$version_tags = static::parse_since_tags( $phpcs_file, $doc_block_start_token, $doc_block_end_token );
+		if ( empty( $version_tags ) ) {
 			$phpcs_file->addError( $missing_since_tag_error_message, $stack_pointer, $violation_code );
 			return;
 		}
 
-		$version_value = $tokens[ $version_token ]['content'];
+		foreach ( $version_tags as $since_tag_token => $version_value_token ) {
+			if ( null === $version_value_token ) {
+				$phpcs_file->addError( $missing_since_tag_error_message, $since_tag_token, $violation_code );
+				continue;
+			}
 
-		if ( version_compare( $version_value, '0.0.1', '>=' ) ) {
-			// Validate the version value.
-			return;
+			$version_value = $tokens[ $version_value_token ]['content'];
+
+			if ( static::validate_version( $version_value ) ) {
+				continue;
+			}
+
+			$phpcs_file->addError(
+				'Invalid @since version value for the "%s::%s" property: "%s". Version value must be greater than or equal to 0.0.1.',
+				$version_value_token,
+				'InvalidPropertySinceTagVersionValue',
+				array(
+					$class_name,
+					$property_name,
+					$version_value,
+				)
+			);
 		}
-
-		$phpcs_file->addError(
-			'Invalid @since version value for the "%s::%s" property: "%s". Version value must be greater than or equal to 0.0.1.',
-			$version_token,
-			'InvalidPropertySinceTagVersionValue',
-			array(
-				$class_name,
-				$property_name,
-				$version_value,
-			)
-		);
 	}
 
 	/**
@@ -343,29 +372,50 @@ class FunctionCommentSinceTagSniff implements Sniff {
 
 		list( $doc_block_start_token, $doc_block_end_token ) = $docblock;
 
-		$version_token = static::find_version_tag_token( $phpcs_file, $doc_block_start_token, $doc_block_end_token );
-		if ( false === $version_token ) {
+		$version_tags = static::parse_since_tags( $phpcs_file, $doc_block_start_token, $doc_block_end_token );
+		if ( empty( $version_tags ) ) {
 			$phpcs_file->addError( $missing_since_tag_error_message, $stack_pointer, $violation_code );
 			return;
 		}
 
-		$version_value = $tokens[ $version_token ]['content'];
+		foreach ( $version_tags as $since_tag_token => $version_value_token ) {
+			if ( null === $version_value_token ) {
+				$phpcs_file->addError( $missing_since_tag_error_message, $since_tag_token, $violation_code );
+				continue;
+			}
 
-		if ( version_compare( $version_value, '0.0.1', '>=' ) ) {
-			// Validate the version value.
-			return;
+			$version_value = $tokens[ $version_value_token ]['content'];
+
+			if ( static::validate_version( $version_value ) ) {
+				continue;
+			}
+
+			$phpcs_file->addError(
+				'Invalid @since version value for the "%s()" %s: "%s". Version value must be greater than or equal to 0.0.1.',
+				$version_value_token,
+				$violation_code,
+				array(
+					$function_name,
+					$is_oo_method ? 'method' : 'function',
+					$version_value,
+				)
+			);
+		}
+	}
+
+	/**
+	 * Validates the version value.
+	 *
+	 * @param string $version The version value being checked.
+	 * @return bool True if the version value is valid.
+	 */
+	protected static function validate_version( $version ) {
+		$matches = array();
+		if ( 1 === preg_match( '/^MU \((?<version>.+)\)/', $version, $matches ) ) {
+			$version = $matches['version'];
 		}
 
-		$phpcs_file->addError(
-			'Invalid @since version value for the "%s()" %s: "%s". Version value must be greater than or equal to 0.0.1.',
-			$version_token,
-			$violation_code,
-			array(
-				$function_name,
-				$is_oo_method ? 'method' : 'function',
-				$version_value,
-			)
-		);
+		return version_compare( $version, '0.0.1', '>=' );
 	}
 
 	/**
@@ -442,26 +492,33 @@ class FunctionCommentSinceTagSniff implements Sniff {
 	}
 
 	/**
-	 * Searches for a version tag within a docblock.
+	 * Searches for @since values within a docblock.
 	 *
 	 * @param File $phpcs_file            The file being scanned.
 	 * @param int  $doc_block_start_token The token index where the docblock starts.
 	 * @param int  $doc_block_end_token   The token index where the docblock ends.
-	 * @return false|int The token index of the version tag within the docblock if found, false otherwise.
+	 * @return array Returns an array of "@since" tokens and their corresponding value tokens.
 	 */
-	protected static function find_version_tag_token( File $phpcs_file, $doc_block_start_token, $doc_block_end_token ) {
-		$tokens          = $phpcs_file->getTokens();
-		$since_tag_token = $phpcs_file->findNext( T_DOC_COMMENT_TAG, $doc_block_start_token, $doc_block_end_token, false, '@since', true );
-		if ( false === $since_tag_token ) {
-			return false;
+	protected static function parse_since_tags( File $phpcs_file, $doc_block_start_token, $doc_block_end_token ) {
+		$tokens = $phpcs_file->getTokens();
+
+		$version_tags = array();
+
+		for ( $i = $doc_block_start_token + 1; $i < $doc_block_end_token; $i++ ) {
+			if ( ! ( T_DOC_COMMENT_TAG === $tokens[ $i ]['code'] && '@since' === $tokens[ $i ]['content'] ) ) {
+				continue;
+			}
+
+			$version_token = $phpcs_file->findNext( T_DOC_COMMENT_WHITESPACE, $i + 1, $doc_block_end_token, true, null, true );
+			if ( ( false === $version_token ) || ( T_DOC_COMMENT_STRING !== $tokens[ $version_token ]['code'] ) ) {
+				$version_tags[ $i ] = null;
+				continue;
+			}
+
+			$version_tags[ $i ] = $version_token;
 		}
 
-		$version_token = $phpcs_file->findNext( T_DOC_COMMENT_WHITESPACE, $since_tag_token + 1, null, true, null, true );
-		if ( ( false === $version_token ) || ( T_DOC_COMMENT_STRING !== $tokens[ $version_token ]['code'] ) ) {
-			return false;
-		}
-
-		return $version_token;
+		return $version_tags;
 	}
 
 	/**
