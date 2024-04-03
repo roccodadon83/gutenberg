@@ -27,6 +27,15 @@ function foo() {
 
 	/** @var This filter is documented in foo.php */
 	$result = apply_filters( 'some_filter', array() );
+
+	/**
+	 * @since 3.0.0
+	 * @since
+	 * @since MU (3.0.0)
+	 * @since invalid_value
+	 * @since
+	 */
+	$result = apply_filters( 'some_filter', array() );
 }
 
 /**
@@ -51,6 +60,16 @@ function qux() {
 $variable = 'some_value'; /** Some comment @since 123 */
 
 function quux() {
+}
+
+/**
+ * @since 3.0.0
+ * @since
+ * @since MU (3.0.0)
+ * @since invalid_value
+ * @since
+ */
+function grault() {
 }
 
 $result = array_map( function ( $value ) {
@@ -80,6 +99,15 @@ class Foo {
 	public $quux_property;
 
 	private $corge_property;
+
+	/**
+	 * @since 3.0.0
+	 * @since
+	 * @since MU (3.0.0)
+	 * @since invalid_value
+	 * @since
+	 */
+	public $grault_property;
 
 	protected function foobar() {
 		$result = do_action( 'some_filter', array() );
@@ -144,6 +172,16 @@ class Foo {
 	}
 
 	function no_visibility_modifier() {}
+
+	/**
+	 * @since 3.0.0
+	 * @since
+	 * @since MU (3.0.0)
+	 * @since invalid_value
+	 * @since
+	 */
+	public function grault() {
+	}
 }
 
 /**
@@ -170,8 +208,17 @@ $variable = 'some_value'; /** Some comment @since 123 */
 class Foo_4 {
 }
 
-abstract class Bar_Abstract {
+/**
+ * @since 3.0.0
+ * @since
+ * @since MU (3.0.0)
+ * @since invalid_value
+ * @since
+ */
+class Foo_5 {
+}
 
+abstract class Bar_Abstract {
 	/**
 	 * @since
 	 * 123
@@ -193,6 +240,15 @@ abstract class Bar_Abstract {
 	public $quux_property;
 
 	private $corge_property;
+
+	/**
+	 * @since 3.0.0
+	 * @since
+	 * @since MU (3.0.0)
+	 * @since invalid_value
+	 * @since
+	 */
+	public $grault_property;
 
 	protected function foobar() {
 		$result = do_action( 'some_filter', array() );
@@ -257,6 +313,16 @@ abstract class Bar_Abstract {
 	}
 
 	function no_visibility_modifier() {}
+
+	/**
+	 * @since 3.0.0
+	 * @since
+	 * @since MU (3.0.0)
+	 * @since invalid_value
+	 * @since
+	 */
+	public function grault() {
+	}
 }
 
 /**
@@ -283,6 +349,16 @@ $variable = 'some_value'; /** Some comment @since 123 */
 class Bar_4 {
 }
 
+/**
+ * @since 3.0.0
+ * @since
+ * @since MU (3.0.0)
+ * @since invalid_value
+ * @since
+ */
+class Bar_5 {
+}
+
 Trait Baz {
 
 	/**
@@ -306,6 +382,15 @@ Trait Baz {
 	public $quux_property;
 
 	private $corge_property;
+
+	/**
+	 * @since 3.0.0
+	 * @since
+	 * @since MU (3.0.0)
+	 * @since invalid_value
+	 * @since
+	 */
+	public $grault_property;
 
 	protected function foobar() {
 		$result = do_action( 'some_filter', array() );
@@ -368,6 +453,16 @@ Trait Baz {
 	}
 
 	function no_visibility_modifier() {}
+
+	/**
+	 * @since 3.0.0
+	 * @since
+	 * @since MU (3.0.0)
+	 * @since invalid_value
+	 * @since
+	 */
+	public function grault() {
+	}
 }
 
 /**
@@ -416,6 +511,15 @@ interface Qux {
 	/** Some comment @since 123 */
 
 	public function quux();
+
+	/**
+	 * @since 3.0.0
+	 * @since
+	 * @since MU (3.0.0)
+	 * @since invalid_value
+	 * @since
+	 */
+	public function grault();
 }
 
 /**
@@ -468,4 +572,13 @@ $variable = 'some_value'; /** Some comment @since 123 */$
 $result = apply_filters( 'some_filter', array() );
 
 /** @var This filter is documented in foo.php */
+$result = apply_filters( 'some_filter', array() );
+
+/**
+ * @since 3.0.0
+ * @since
+ * @since MU (3.0.0)
+ * @since invalid_value
+ * @since
+ */
 $result = apply_filters( 'some_filter', array() );
