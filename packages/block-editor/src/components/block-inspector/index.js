@@ -30,7 +30,7 @@ import BlockInfo from '../block-info-slot-fill';
 import BlockQuickNavigation from '../block-quick-navigation';
 import { useBorderPanelLabel } from '../../hooks/border';
 
-function BlockInspectorLockedBlocks( { topLevelLockedBlock } ) {
+function BlockInspectorContentLockedParent( { topLevelLockedBlock } ) {
 	const contentClientIds = useSelect(
 		( select ) => {
 			const {
@@ -172,7 +172,7 @@ const BlockInspector = ( { showNoBlockSelectedMessage = true } ) => {
 	}
 	if ( topLevelLockedBlock ) {
 		return (
-			<BlockInspectorLockedBlocks
+			<BlockInspectorContentLockedParent
 				topLevelLockedBlock={ topLevelLockedBlock }
 			/>
 		);
