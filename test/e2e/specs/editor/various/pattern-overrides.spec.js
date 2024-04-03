@@ -78,10 +78,18 @@ test.describe( 'Pattern Overrides', () => {
 			await renameDialog
 				.getByRole( 'textbox', { name: 'Block name' } )
 				.fill( editableParagraphName );
-			await renameDialog
+			await renameDialog.getByRole( 'button', { name: 'Save' } ).click();
+
+			await editor.openDocumentSettingsSidebar();
+			const editorSettings = page.getByRole( 'region', {
+				name: 'Editor settings',
+			} );
+			await editorSettings
+				.getByRole( 'button', { name: 'Advanced' } )
+				.click();
+			await editorSettings
 				.getByRole( 'checkbox', { name: 'Allow overrides' } )
 				.setChecked( true );
-			await renameDialog.getByRole( 'button', { name: 'Save' } ).click();
 
 			await expect.poll( editor.getBlocks ).toMatchObject( [
 				{

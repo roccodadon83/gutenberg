@@ -278,7 +278,6 @@ function useBlockEditorSettings( settings, postType, postId ) {
 					? [ [ 'core/navigation', {}, [] ] ]
 					: settings.template,
 			__experimentalSetIsInserterOpened: setIsInserterOpened,
-			postType,
 		} ),
 		[
 			allowedBlockTypes,
