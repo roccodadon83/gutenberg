@@ -15,7 +15,9 @@ import { useSelect } from '@wordpress/data';
  */
 import SkipToSelectedBlock from '../skip-to-selected-block';
 import BlockCard from '../block-card';
-import MultiSelectionInspector from '../multi-selection-inspector';
+import MultiSelectionInspector, {
+	MultiSelectionControls,
+} from '../multi-selection-inspector';
 import BlockVariationTransforms from '../block-variation-transforms';
 import useBlockDisplayInformation from '../use-block-display-information';
 import { store as blockEditorStore } from '../../store';
@@ -74,6 +76,7 @@ function BlockInspectorContentLockedChild( { clientId } ) {
 			/>
 			<BlockVariationTransforms blockClientId={ clientId } />
 			<BlockInfo.Slot />
+			<InspectorControls.Slot group="contentOnly" />
 		</div>
 	);
 }
@@ -88,14 +91,14 @@ const BlockInspector = ( { showNoBlockSelectedMessage = true } ) => {
 		isContentLockedChild,
 	} = useSelect( ( select ) => {
 		const {
-			getSelectedBlockClientId,
+			getSelectedBlockClientIds,
 			getSelectedBlockCount,
 			getBlockName,
 			getTemplateLock,
 			__unstableGetContentLockingParent,
 		} = select( blockEditorStore );
 
-		const _selectedBlockClientId = getSelectedBlockClientId();
+		const _selectedBlockClientId = getSelectedBlockClientIds()?.[ 0 ];
 		const _selectedBlockName =
 			_selectedBlockClientId && getBlockName( _selectedBlockClientId );
 		const _blockType =
@@ -115,9 +118,6 @@ const BlockInspector = ( { showNoBlockSelectedMessage = true } ) => {
 		};
 	}, [] );
 
-	const availableTabs = useInspectorControlsTabs( blockType?.name );
-	const showTabs = availableTabs?.length > 1;
-
 	// The block inspector animation settings will be completely
 	// removed in the future to create an API which allows the block
 	// inspector to transition between what it
@@ -129,38 +129,15 @@ const BlockInspector = ( { showNoBlockSelectedMessage = true } ) => {
 		selectedBlockClientId
 	);
 
-	const borderPanelLabel = useBorderPanelLabel( {
-		blockName: selectedBlockName,
-	} );
-
 	if ( count > 1 ) {
 		return (
 			<div className="block-editor-block-inspector">
 				<MultiSelectionInspector />
-				{ showTabs ? (
-					<InspectorControlsTabs tabs={ availableTabs } />
-				) : (
-					<>
-						<InspectorControls.Slot />
-						<InspectorControls.Slot
-							group="color"
-							label={ __( 'Color' ) }
-							className="color-block-support-panel__inner-wrapper"
-						/>
-						<InspectorControls.Slot
-							group="typography"
-							label={ __( 'Typography' ) }
-						/>
-						<InspectorControls.Slot
-							group="dimensions"
-							label={ __( 'Dimensions' ) }
-						/>
-						<InspectorControls.Slot
-							group="border"
-							label={ borderPanelLabel }
-						/>
-						<InspectorControls.Slot group="styles" />
-					</>
+				{ ! isContentLockedChild && (
+					<MultiSelectionControls
+						blockType={ blockType }
+						blockName={ selectedBlockName }
+					/>
 				) }
 			</div>
 		);
