@@ -30,7 +30,7 @@ import BlockInfo from '../block-info-slot-fill';
 import BlockQuickNavigation from '../block-quick-navigation';
 import { useBorderPanelLabel } from '../../hooks/border';
 
-function BlockInspectorContentLockedParent( { topLevelLockedBlock } ) {
+function BlockInspectorContentLockedParent( { clientId } ) {
 	const contentClientIds = useSelect(
 		( select ) => {
 			const {
@@ -38,22 +38,22 @@ function BlockInspectorContentLockedParent( { topLevelLockedBlock } ) {
 				getBlockName,
 				getBlockEditingMode,
 			} = select( blockEditorStore );
-			return getClientIdsOfDescendants( topLevelLockedBlock ).filter(
-				( clientId ) =>
-					getBlockName( clientId ) !== 'core/list-item' &&
-					getBlockEditingMode( clientId ) === 'contentOnly'
+			return getClientIdsOfDescendants( clientId ).filter(
+				( innerClientId ) =>
+					getBlockName( innerClientId ) !== 'core/list-item' &&
+					getBlockEditingMode( innerClientId ) === 'contentOnly'
 			);
 		},
-		[ topLevelLockedBlock ]
+		[ clientId ]
 	);
-	const blockInformation = useBlockDisplayInformation( topLevelLockedBlock );
+	const blockInformation = useBlockDisplayInformation( clientId );
 	return (
 		<div className="block-editor-block-inspector">
 			<BlockCard
 				{ ...blockInformation }
 				className={ blockInformation.isSynced && 'is-synced' }
 			/>
-			<BlockVariationTransforms blockClientId={ topLevelLockedBlock } />
+			<BlockVariationTransforms blockClientId={ clientId } />
 			<BlockInfo.Slot />
 			{ contentClientIds.length > 0 && (
 				<PanelBody title={ __( 'Content' ) }>
@@ -64,19 +64,35 @@ function BlockInspectorContentLockedParent( { topLevelLockedBlock } ) {
 	);
 }
 
+function BlockInspectorContentLockedChild( { clientId } ) {
+	const blockInformation = useBlockDisplayInformation( clientId );
+	return (
+		<div className="block-editor-block-inspector">
+			<BlockCard
+				{ ...blockInformation }
+				className={ blockInformation.isSynced && 'is-synced' }
+			/>
+			<BlockVariationTransforms blockClientId={ clientId } />
+			<BlockInfo.Slot />
+		</div>
+	);
+}
+
 const BlockInspector = ( { showNoBlockSelectedMessage = true } ) => {
 	const {
 		count,
 		selectedBlockName,
 		selectedBlockClientId,
 		blockType,
-		topLevelLockedBlock,
+		isContentLockedParent,
+		isContentLockedChild,
 	} = useSelect( ( select ) => {
 		const {
 			getSelectedBlockClientId,
 			getSelectedBlockCount,
 			getBlockName,
 			getTemplateLock,
+			__unstableGetContentLockingParent,
 		} = select( blockEditorStore );
 
 		const _selectedBlockClientId = getSelectedBlockClientId();
@@ -90,11 +106,12 @@ const BlockInspector = ( { showNoBlockSelectedMessage = true } ) => {
 			selectedBlockClientId: _selectedBlockClientId,
 			selectedBlockName: _selectedBlockName,
 			blockType: _blockType,
-			topLevelLockedBlock:
+			isContentLockedParent:
 				getTemplateLock( _selectedBlockClientId ) === 'contentOnly' ||
-				_selectedBlockName === 'core/block'
-					? _selectedBlockClientId
-					: undefined,
+				_selectedBlockName === 'core/block',
+			isContentLockedChild: !! __unstableGetContentLockingParent(
+				_selectedBlockClientId
+			),
 		};
 	}, [] );
 
@@ -170,10 +187,18 @@ const BlockInspector = ( { showNoBlockSelectedMessage = true } ) => {
 		}
 		return null;
 	}
-	if ( topLevelLockedBlock ) {
+	if ( isContentLockedParent ) {
 		return (
 			<BlockInspectorContentLockedParent
-				topLevelLockedBlock={ topLevelLockedBlock }
+				clientId={ selectedBlockClientId }
+			/>
+		);
+	}
+
+	if ( isContentLockedChild ) {
+		return (
+			<BlockInspectorContentLockedChild
+				clientId={ selectedBlockClientId }
 			/>
 		);
 	}
