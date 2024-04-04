@@ -40,13 +40,13 @@ export default function PostSavedState( { forceIsDirty } ) {
 		isAutosaving,
 		isDirty,
 		isNew,
-		isPending,
 		isPublished,
 		isSaveable,
 		isSaving,
 		isScheduled,
 		hasPublishAction,
 		showIconLabels,
+		postStatus,
 	} = useSelect(
 		( select ) => {
 			const {
@@ -66,7 +66,7 @@ export default function PostSavedState( { forceIsDirty } ) {
 				isAutosaving: isAutosavingPost(),
 				isDirty: forceIsDirty || isEditedPostDirty(),
 				isNew: isEditedPostNew(),
-				isPending: 'pending' === getEditedPostAttribute( 'status' ),
+				postStatus: getEditedPostAttribute( 'status' ),
 				isPublished: isCurrentPostPublished(),
 				isSaving: isSavingPost(),
 				isSaveable: isEditedPostSaveable(),
@@ -78,7 +78,7 @@ export default function PostSavedState( { forceIsDirty } ) {
 		},
 		[ forceIsDirty ]
 	);
-
+	const isPending = postStatus === 'pending';
 	const { savePost } = useDispatch( editorStore );
 
 	const wasSaving = usePrevious( isSaving );
@@ -102,7 +102,11 @@ export default function PostSavedState( { forceIsDirty } ) {
 		return null;
 	}
 
-	if ( isPublished || isScheduled ) {
+	if (
+		isPublished ||
+		isScheduled ||
+		! [ 'pending', 'draft' ].includes( postStatus )
+	) {
 		return null;
 	}
 
@@ -115,7 +119,6 @@ export default function PostSavedState( { forceIsDirty } ) {
 	const isSaved = forceSavedMessage || ( ! isNew && ! isDirty );
 	const isSavedState = isSaving || isSaved;
 	const isDisabled = isSaving || isSaved || ! isSaveable;
-
 	let text;
 
 	if ( isSaving ) {

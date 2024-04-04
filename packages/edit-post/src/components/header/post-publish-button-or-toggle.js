@@ -50,9 +50,11 @@ export function PostPublishButtonOrToggle( {
 		( isPending && ! hasPublishAction && ! isSmallerThanMediumViewport )
 	) {
 		component = IS_BUTTON;
+		// TODO: also check this...
 	} else if ( isSmallerThanMediumViewport ) {
 		component = IS_TOGGLE;
 	} else if ( isPublishSidebarEnabled ) {
+		// } else if ( isPublishSidebarEnabled && ! hasNonPostEntityChanges ) {
 		component = IS_TOGGLE;
 	} else {
 		component = IS_BUTTON;

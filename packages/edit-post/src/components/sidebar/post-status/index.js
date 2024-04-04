@@ -10,7 +10,6 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import {
 	PostAuthorPanel,
 	PostSchedulePanel,
-	PostSwitchToDraftButton,
 	PostSyncStatus,
 	PostURLPanel,
 	PostTemplatePanel,
@@ -22,12 +21,10 @@ import {
 /**
  * Internal dependencies
  */
-import PostVisibility from '../post-visibility';
 import PostTrash from '../post-trash';
 import PostSticky from '../post-sticky';
 import PostSlug from '../post-slug';
 import PostFormat from '../post-format';
-import PostPendingStatus from '../post-pending-status';
 import PluginPostStatusInfo from '../plugin-post-status-info';
 import { unlock } from '../../../lock-unlock';
 
@@ -67,13 +64,11 @@ export default function PostStatus() {
 					<>
 						<PostStatusPanel />
 						<PostFeaturedImagePanel withPanelBody={ false } />
-						<PostVisibility />
 						<PostSchedulePanel />
 						<PostTemplatePanel />
 						<PostURLPanel />
 						<PostSyncStatus />
 						<PostSticky />
-						<PostPendingStatus />
 						<PostFormat />
 						<PostSlug />
 						<PostAuthorPanel />
@@ -82,10 +77,7 @@ export default function PostStatus() {
 							style={ {
 								marginTop: '16px',
 							} }
-							spacing={ 4 }
-							wrap
 						>
-							<PostSwitchToDraftButton />
 							<PostTrash />
 						</HStack>
 					</>

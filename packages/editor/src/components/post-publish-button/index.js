@@ -1,16 +1,10 @@
 /**
- * External dependencies
- */
-import classnames from 'classnames';
-
-/**
  * WordPress dependencies
  */
 import { Button } from '@wordpress/components';
 import { Component, createRef } from '@wordpress/element';
 import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
-import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -49,6 +43,10 @@ export class PostPublishButton extends Component {
 		clearTimeout( this.timeoutID );
 	}
 
+	// TODO: we need when:
+	// 1. we have changes in more entities
+	// 2. changed status to `publish`
+	// Open save changes and maybe then open the publish panel
 	createOnClick( callback ) {
 		return ( ...args ) => {
 			const { hasNonPostEntityChanges, setEntitiesSavedStatesCallback } =
@@ -119,6 +117,7 @@ export class PostPublishButton extends Component {
 			visibility,
 			hasNonPostEntityChanges,
 			isSavingNonPostEntityChanges,
+			postStatus,
 		} = this.props;
 
 		const isButtonDisabled =
@@ -135,26 +134,35 @@ export class PostPublishButton extends Component {
 				( ! isPublishable && ! forceIsDirty ) ) &&
 			( ! hasNonPostEntityChanges || isSavingNonPostEntityChanges );
 
-		let publishStatus;
-		if ( ! hasPublishAction ) {
-			publishStatus = 'pending';
-		} else if ( visibility === 'private' ) {
-			publishStatus = 'private';
-		} else if ( isBeingScheduled ) {
-			publishStatus = 'future';
-		} else {
-			publishStatus = 'publish';
-		}
+		// TODO: this needs changes...
+		// and probably should be removed and get the status from the post..
+		// let publishStatus = 'publish';
+		// if ( ! hasPublishAction ) {
+		// 	publishStatus = 'pending';
+		// } else if ( visibility === 'private' ) {
+		// 	publishStatus = 'private';
+		// } else if ( isBeingScheduled ) {
+		// 	publishStatus = 'future';
+		// } else if ( postStatus === 'draft' ) {
+		// 	publishStatus = postStatus;
+		// }
 
+		// TODO: Here we open the save panel, but we need
+		// to also check if we have edited the status to
+		// at least `publish`.
+		// What do then? Open the publish panel at some point or
+		// save/publish directly? Or something else?
 		const onClickButton = () => {
 			if ( isButtonDisabled ) {
 				return;
 			}
 			onSubmit();
-			onStatusChange( publishStatus );
+			// TODO: this needs changes...
+			// onStatusChange( publishStatus );
 			onSave();
 		};
 
+		// Callback to open the publish panel.
 		const onClickToggle = () => {
 			if ( isToggleDisabled ) {
 				return;
@@ -179,30 +187,16 @@ export class PostPublishButton extends Component {
 			size: 'compact',
 			onClick: this.createOnClick( onClickToggle ),
 		};
-
-		const toggleChildren = isBeingScheduled
-			? __( 'Schedule…' )
-			: __( 'Publish' );
-		const buttonChildren = (
-			<PublishButtonLabel
-				hasNonPostEntityChanges={ hasNonPostEntityChanges }
-			/>
-		);
-
+		// TODO: properly check what is the difference with toggle(PostPublishButtonOrToggle)..
 		const componentProps = isToggle ? toggleProps : buttonProps;
-		const componentChildren = isToggle ? toggleChildren : buttonChildren;
+		// const componentChildren = isToggle ? toggleChildren : buttonChildren;
+		const componentChildren = <PublishButtonLabel />;
 		return (
 			<>
 				<Button
 					ref={ this.buttonNode }
 					{ ...componentProps }
-					className={ classnames(
-						componentProps.className,
-						'editor-post-publish-button__button',
-						{
-							'has-changes-dot': hasNonPostEntityChanges,
-						}
-					) }
+					className={ `${ componentProps.className } editor-post-publish-button__button` }
 					size="compact"
 				>
 					{ componentChildren }
@@ -228,6 +222,7 @@ export default compose( [
 			getCurrentPostId,
 			hasNonPostEntityChanges,
 			isSavingNonPostEntityChanges,
+			getEditedPostAttribute,
 		} = select( editorStore );
 		return {
 			isSaving: isSavingPost(),
@@ -242,6 +237,7 @@ export default compose( [
 				getCurrentPost()._links?.[ 'wp:action-publish' ] ?? false,
 			postType: getCurrentPostType(),
 			postId: getCurrentPostId(),
+			postStatus: getEditedPostAttribute( 'status' ),
 			hasNonPostEntityChanges: hasNonPostEntityChanges(),
 			isSavingNonPostEntityChanges: isSavingNonPostEntityChanges(),
 		};

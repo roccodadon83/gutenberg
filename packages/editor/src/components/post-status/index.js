@@ -95,13 +95,10 @@ function PostStatusLabel() {
 			expanded={ false }
 			spacing={ 0 }
 			justify="flex-start"
-			className={ classnames(
-				'editor-post-status-label',
-				{
-					[ ` has-status-${ status }` ]: !! status,
-				},
-				isProtected && 'has-password'
-			) }
+			className={ classnames( 'editor-post-status-label', {
+				[ ` has-status-${ status }` ]: !! status,
+				'has-password': isProtected,
+			} ) }
 		>
 			<Truncate>{ statusLabel }</Truncate>
 			{ isProtected && <Icon icon={ key } /> }
@@ -209,7 +206,7 @@ export default function PostStatus() {
 		[ popoverAnchor ]
 	);
 
-	const saveStatus = async ( {
+	const updatePost = async ( {
 		status: newStatus = status,
 		password: newPassword = password,
 		date: newDate = date,
@@ -235,16 +232,16 @@ export default function PostStatus() {
 	const handleTogglePassword = ( value ) => {
 		setShowPassword( value );
 		if ( ! value ) {
-			saveStatus( { password: '' } );
+			updatePost( { password: '' } );
 		}
 	};
 
 	const handleStatus = ( value ) => {
 		let newDate = date;
 		let newPassword = password;
-		if ( value === 'publish' ) {
+		if ( [ 'publish', 'draft' ].includes( value ) ) {
 			if ( new Date( date ) > new Date() ) {
-				newDate = null;
+				newDate = new Date();
 			}
 		} else if ( value === 'future' ) {
 			if ( ! date || new Date( date ) < new Date() ) {
@@ -255,7 +252,7 @@ export default function PostStatus() {
 			setShowPassword( false );
 			newPassword = '';
 		}
-		saveStatus( {
+		updatePost( {
 			status: value,
 			date: newDate,
 			password: newPassword,
@@ -313,7 +310,7 @@ export default function PostStatus() {
 											<TextControl
 												label={ __( 'Password' ) }
 												onChange={ ( value ) =>
-													saveStatus( {
+													updatePost( {
 														password: value,
 													} )
 												}

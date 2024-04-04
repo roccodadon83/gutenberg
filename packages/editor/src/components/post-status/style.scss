@@ -30,8 +30,7 @@
 
 		&.has-status-publish,
 		&.has-status-private {
-			// TODO: use vars..
-			background: #F7F9F7;
+			background: #f7f9f7;
 			color: #187034;
 
 			svg {
@@ -39,7 +38,7 @@
 			}
 
 			&:hover {
-				background: #E8F2E9;
+				background: #e8f2e9;
 			}
 		}
 
