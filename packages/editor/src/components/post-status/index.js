@@ -110,7 +110,9 @@ const STATUS_OPTIONS = [
 		label: (
 			<>
 				{ __( 'Draft' ) }
-				<Text variant="muted">{ __( 'Not ready to publish.' ) }</Text>
+				<Text variant="muted" size={ 12 }>
+					{ __( 'Not ready to publish.' ) }
+				</Text>
 			</>
 		),
 		value: 'draft',
@@ -119,7 +121,7 @@ const STATUS_OPTIONS = [
 		label: (
 			<>
 				{ __( 'Pending' ) }
-				<Text variant="muted">
+				<Text variant="muted" size={ 12 }>
 					{ __( 'Waiting for review before publishing.' ) }
 				</Text>
 			</>
@@ -130,7 +132,7 @@ const STATUS_OPTIONS = [
 		label: (
 			<>
 				{ __( 'Private' ) }
-				<Text variant="muted">
+				<Text variant="muted" size={ 12 }>
 					{ __( 'Only visible to site admins and editors.' ) }
 				</Text>
 			</>
@@ -141,7 +143,7 @@ const STATUS_OPTIONS = [
 		label: (
 			<>
 				{ __( 'Scheduled' ) }
-				<Text variant="muted">
+				<Text variant="muted" size={ 12 }>
 					{ __( 'Publish automatically on a chosen date.' ) }
 				</Text>
 			</>
@@ -152,7 +154,9 @@ const STATUS_OPTIONS = [
 		label: (
 			<>
 				{ __( 'Published' ) }
-				<Text variant="muted">{ __( 'Visible to everyone.' ) }</Text>
+				<Text variant="muted" size={ 12 }>
+					{ __( 'Visible to everyone.' ) }
+				</Text>
 			</>
 		),
 		value: 'publish',
@@ -276,7 +280,7 @@ export default function PostStatus() {
 						onClose={ onClose }
 					/>
 					<form>
-						<VStack spacing={ 5 }>
+						<VStack spacing={ 4 }>
 							<RadioControl
 								className="editor-change-status__options"
 								hideLabelFromVision
@@ -286,7 +290,11 @@ export default function PostStatus() {
 								selected={ status }
 							/>
 							{ status !== 'private' && (
-								<fieldset className="editor-change-status__password-fieldset">
+								<VStack
+									as="fieldset"
+									spacing={ 4 }
+									className="editor-change-status__password-fieldset"
+								>
 									<CheckboxControl
 										__nextHasNoMarginBottom
 										className="block-editor-block-lock-modal__options-title"
@@ -312,10 +320,12 @@ export default function PostStatus() {
 												) }
 												type="text"
 												id={ passwordInputId }
+												__next40pxDefaultSize
+												__nextHasNoMarginBottom
 											/>
 										</div>
 									) }
-								</fieldset>
+								</VStack>
 							) }
 						</VStack>
 					</form>
