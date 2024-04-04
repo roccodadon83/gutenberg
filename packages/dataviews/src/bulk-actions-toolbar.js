@@ -10,7 +10,7 @@ import {
 } from '@wordpress/components';
 import { useMemo } from '@wordpress/element';
 import { _n, sprintf, __ } from '@wordpress/i18n';
-import { close } from '@wordpress/icons';
+import { closeSmall } from '@wordpress/icons';
 import { useReducedMotion } from '@wordpress/compose';
 
 /**
@@ -20,28 +20,19 @@ import { ActionWithModal } from './item-actions';
 
 const SNACKBAR_VARIANTS = {
 	init: {
-		bottom: 0,
-		opacity: 0,
+		bottom: -48,
 	},
 	open: {
 		bottom: 24,
-		opacity: 1,
 		transition: {
-			bottom: { type: 'tween', duration: 0.8, ease: [ 0, 0, 0.2, 1 ] },
-			opacity: {
-				type: 'tween',
-				duration: 0.7,
-				delay: 0.05,
-				ease: [ 0, 0, 0.2, 1 ],
-			},
+			bottom: { type: 'tween', duration: 0.2, ease: [ 0, 0, 0.2, 1 ] },
 		},
 	},
 	exit: {
 		opacity: 0,
+		bottom: 24,
 		transition: {
-			type: 'tween',
-			duration: 0.1,
-			ease: [ 0, 0, 0.2, 1 ],
+			opacity: { type: 'tween', duration: 0.2, ease: [ 0, 0, 0.2, 1 ] },
 		},
 	},
 };
@@ -110,20 +101,19 @@ export default function BulkActionsToolbar( {
 				<Toolbar label={ __( 'Bulk actions' ) }>
 					<div className="dataviews-bulk-actions-toolbar-wrapper">
 						<ToolbarGroup>
-							<ToolbarButton onClick={ () => {} } disabled>
+							<div className="dataviews-bulk-actions__selection-count">
 								{
 									// translators: %s: Total number of selected items.
 									sprintf(
 										// translators: %s: Total number of selected items.
 										_n(
-											'%s item',
-											'%s items',
+											'%s selected',
 											selection.length
 										),
 										selection.length
 									)
 								}
-							</ToolbarButton>
+							</div>
 							{ primaryActionsToShow.map( ( action ) => {
 								if ( !! action.RenderModal ) {
 									return (
@@ -151,7 +141,9 @@ export default function BulkActionsToolbar( {
 						</ToolbarGroup>
 						<ToolbarGroup>
 							<ToolbarButton
-								icon={ close }
+								icon={ closeSmall }
+								showTooltip
+								label={ __( 'Cancel' ) }
 								onClick={ () => {
 									setSelection( EMPTY_ARRAY );
 								} }
