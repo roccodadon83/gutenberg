@@ -27,7 +27,7 @@ import { TEMPLATE_POST_TYPE } from '../../store/constants';
 import { unlock } from '../../lock-unlock';
 import TemplateAreas from '../template-areas';
 
-export default function PostCardPanel( { className, actions } ) {
+export default function PostCardPanel( { className, actions, children } ) {
 	const { modified, title, templateInfo, icon, postType } = useSelect(
 		( select ) => {
 			const {
@@ -100,6 +100,7 @@ export default function PostCardPanel( { className, actions } ) {
 							) }
 						</VStack>
 					) }
+					{ children }
 					{ postType === TEMPLATE_POST_TYPE && <TemplateAreas /> }
 				</VStack>
 			</div>
