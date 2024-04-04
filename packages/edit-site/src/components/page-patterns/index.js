@@ -34,9 +34,11 @@ import { usePrevious } from '@wordpress/compose';
 /**
  * Internal dependencies
  */
+import { Async } from '../async';
 import Page from '../page';
 import {
 	LAYOUT_GRID,
+	LAYOUT_TABLE,
 	PATTERN_TYPES,
 	TEMPLATE_PART_POST_TYPE,
 	PATTERN_SYNC_TYPES,
@@ -65,6 +67,9 @@ const { ExperimentalBlockEditorProvider, useGlobalStyle } = unlock(
 const templatePartIcons = { header, footer, uncategorized };
 const EMPTY_ARRAY = [];
 const defaultConfigPerViewType = {
+	[ LAYOUT_TABLE ]: {
+		primaryField: 'title',
+	},
 	[ LAYOUT_GRID ]: {
 		mediaField: 'preview',
 		primaryField: 'title',
@@ -147,6 +152,7 @@ function Preview( { item, categoryId, viewType } ) {
 		postId: isUserPattern ? item.id : item.name,
 		categoryId,
 		categoryType: isTemplatePart ? item.type : PATTERN_TYPES.theme,
+		canvas: 'edit',
 	} );
 
 	return (
@@ -171,7 +177,14 @@ function Preview( { item, categoryId, viewType } ) {
 				>
 					{ isEmpty && isTemplatePart && __( 'Empty template part' ) }
 					{ isEmpty && ! isTemplatePart && __( 'Empty pattern' ) }
-					{ ! isEmpty && <BlockPreview blocks={ item.blocks } /> }
+					{ ! isEmpty && (
+						<Async>
+							<BlockPreview
+								blocks={ item.blocks }
+								viewportWidth={ item.viewportWidth }
+							/>
+						</Async>
+					) }
 				</PreviewWrapper>
 			</div>
 			{ ariaDescriptions.map( ( ariaDescription, index ) => (
@@ -197,6 +210,7 @@ function Title( { item, categoryId } ) {
 		postId: isUserPattern ? item.id : item.name,
 		categoryId,
 		categoryType: isTemplatePart ? item.type : PATTERN_TYPES.theme,
+		canvas: 'edit',
 	} );
 	if ( ! isUserPattern && templatePartIcons[ categoryId ] ) {
 		itemIcon = templatePartIcons[ categoryId ];
@@ -393,8 +407,7 @@ export default function DataviewsPatterns() {
 					isLoading={ isResolving }
 					view={ view }
 					onChangeView={ onChangeView }
-					deferredRendering
-					supportedLayouts={ [ LAYOUT_GRID ] }
+					supportedLayouts={ [ LAYOUT_GRID, LAYOUT_TABLE ] }
 				/>
 			</Page>
 		</ExperimentalBlockEditorProvider>
