@@ -297,7 +297,6 @@ export default function PostStatus() {
 								>
 									<CheckboxControl
 										__nextHasNoMarginBottom
-										className="block-editor-block-lock-modal__options-title"
 										label={ __( 'Password protected' ) }
 										help={ __(
 											'Only visible to those who know the password'
