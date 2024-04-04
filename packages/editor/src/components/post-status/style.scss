@@ -4,7 +4,6 @@
 
 	.editor-post-status-trigger {
 		padding: 0;
-		border-radius: $grid-unit-05;
 		overflow: hidden;
 		height: $grid-unit-30;
 	}
@@ -12,29 +11,47 @@
 	.editor-post-status-label {
 		display: inline-flex;
 		padding: 0 $grid-unit-10;
-		background: rgba($gray-400, 0.4);
+		background: rgba($gray-900, 0.04);
 		height: 100%;
+		font-weight: 500;
+		color: $gray-900;
+
+		&:hover {
+			background: rgba($gray-900, 0.08);
+		}
 
 		time {
 			display: contents;
 		}
 
+		&.has-password {
+			padding-right: $grid-unit-05;
+		}
+
 		&.has-status-publish,
 		&.has-status-private {
-			background: rgba($alert-green, 0.4);
 			// TODO: use vars..
-			color: #398c4f;
+			background: #F7F9F7;
+			color: #187034;
 
 			svg {
-				fill: #398c4f;
+				fill: #187034;
+			}
+
+			&:hover {
+				background: #E8F2E9;
 			}
 		}
 
 		&.has-status-future {
-			background: rgba($gray-300, 0.4);
+			background: rgba(var(--wp-admin-theme-color--rgb), 0.04);
 			color: var(--wp-admin-theme-color);
 			svg {
 				fill: var(--wp-admin-theme-color);
+			}
+
+			&:hover {
+				background: rgba(var(--wp-admin-theme-color--rgb), 0.08);
 			}
 		}
 	}

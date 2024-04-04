@@ -95,9 +95,13 @@ function PostStatusLabel() {
 			expanded={ false }
 			spacing={ 0 }
 			justify="flex-start"
-			className={ classnames( 'editor-post-status-label', {
-				[ ` has-status-${ status }` ]: !! status,
-			} ) }
+			className={ classnames(
+				'editor-post-status-label',
+				{
+					[ ` has-status-${ status }` ]: !! status,
+				},
+				isProtected && 'has-password'
+			) }
 		>
 			<Truncate>{ statusLabel }</Truncate>
 			{ isProtected && <Icon icon={ key } /> }
