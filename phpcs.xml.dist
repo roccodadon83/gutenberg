@@ -178,8 +178,5 @@
 		<include-pattern>/packages/block-serialization-default-parser/.+/*\.php$</include-pattern>
 		<include-pattern>/packages/widgets/src/blocks/legacy-widget/index\.php$</include-pattern>
 		<include-pattern>/packages/widgets/src/blocks/widget-group/index\.php$</include-pattern>
-		<properties>
-			<property name="minimumVisibility" value="protected" />
-		</properties>
 	</rule>
 </ruleset>
