@@ -106,7 +106,7 @@ function selectExistingMenu( select, ref ) {
 	// requiring a post update to publish to show in frontend.
 	// To achieve that, index.php must reflect this validation only for published.
 	const isNavigationMenuPublishedOrDraft =
-		menuToUse.status === 'publish' || menuToUse.status === 'draft';
+		menuToUse?.status === 'publish' || menuToUse?.status === 'draft';
 
 	return {
 		isNavigationMenuResolved: hasResolvedNavigationMenu,
