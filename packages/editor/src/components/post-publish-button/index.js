@@ -110,14 +110,14 @@ export class PostPublishButton extends Component {
 			isSaving,
 			isAutoSaving,
 			isToggle,
-			onSave,
-			onStatusChange,
+			savePostStatus,
 			onSubmit = noop,
 			onToggle,
 			visibility,
 			hasNonPostEntityChanges,
 			isSavingNonPostEntityChanges,
 			postStatus,
+			postStatusHasChanged,
 		} = this.props;
 
 		const isButtonDisabled =
@@ -134,32 +134,27 @@ export class PostPublishButton extends Component {
 				( ! isPublishable && ! forceIsDirty ) ) &&
 			( ! hasNonPostEntityChanges || isSavingNonPostEntityChanges );
 
-		// TODO: this needs changes...
-		// and probably should be removed and get the status from the post..
-		// let publishStatus = 'publish';
-		// if ( ! hasPublishAction ) {
-		// 	publishStatus = 'pending';
-		// } else if ( visibility === 'private' ) {
-		// 	publishStatus = 'private';
-		// } else if ( isBeingScheduled ) {
-		// 	publishStatus = 'future';
-		// } else if ( postStatus === 'draft' ) {
-		// 	publishStatus = postStatus;
-		// }
+		// If the new status has not changed explicitely, we derive it from
+		// other factors, like having a publish action, etc.. We need to preserve
+		// this because it affects when to show the pre and post publish panels.
+		// If it has changed though explicitely, we need to respect that.
+		let publishStatus = 'publish';
+		if ( postStatusHasChanged ) {
+			publishStatus = postStatus;
+		} else if ( ! hasPublishAction ) {
+			publishStatus = 'pending';
+		} else if ( visibility === 'private' ) {
+			publishStatus = 'private';
+		} else if ( isBeingScheduled ) {
+			publishStatus = 'future';
+		}
 
-		// TODO: Here we open the save panel, but we need
-		// to also check if we have edited the status to
-		// at least `publish`.
-		// What do then? Open the publish panel at some point or
-		// save/publish directly? Or something else?
 		const onClickButton = () => {
 			if ( isButtonDisabled ) {
 				return;
 			}
 			onSubmit();
-			// TODO: this needs changes...
-			// onStatusChange( publishStatus );
-			onSave();
+			savePostStatus( publishStatus );
 		};
 
 		// Callback to open the publish panel.
@@ -187,10 +182,7 @@ export class PostPublishButton extends Component {
 			size: 'compact',
 			onClick: this.createOnClick( onClickToggle ),
 		};
-		// TODO: properly check what is the difference with toggle(PostPublishButtonOrToggle)..
 		const componentProps = isToggle ? toggleProps : buttonProps;
-		// const componentChildren = isToggle ? toggleChildren : buttonChildren;
-		const componentChildren = <PublishButtonLabel />;
 		return (
 			<>
 				<Button
@@ -199,7 +191,7 @@ export class PostPublishButton extends Component {
 					className={ `${ componentProps.className } editor-post-publish-button__button` }
 					size="compact"
 				>
-					{ componentChildren }
+					<PublishButtonLabel />
 				</Button>
 			</>
 		);
@@ -223,6 +215,7 @@ export default compose( [
 			hasNonPostEntityChanges,
 			isSavingNonPostEntityChanges,
 			getEditedPostAttribute,
+			getPostEdits,
 		} = select( editorStore );
 		return {
 			isSaving: isSavingPost(),
@@ -238,6 +231,7 @@ export default compose( [
 			postType: getCurrentPostType(),
 			postId: getCurrentPostId(),
 			postStatus: getEditedPostAttribute( 'status' ),
+			postStatusHasChanged: getPostEdits()?.status,
 			hasNonPostEntityChanges: hasNonPostEntityChanges(),
 			isSavingNonPostEntityChanges: isSavingNonPostEntityChanges(),
 		};
@@ -245,9 +239,10 @@ export default compose( [
 	withDispatch( ( dispatch ) => {
 		const { editPost, savePost } = dispatch( editorStore );
 		return {
-			onStatusChange: ( status ) =>
-				editPost( { status }, { undoIgnore: true } ),
-			onSave: savePost,
+			savePostStatus: ( status ) => {
+				editPost( { status }, { undoIgnore: true } );
+				savePost();
+			},
 		};
 	} ),
 ] )( PostPublishButton );
