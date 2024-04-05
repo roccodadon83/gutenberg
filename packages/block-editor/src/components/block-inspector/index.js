@@ -7,7 +7,11 @@ import {
 	getUnregisteredTypeHandlerName,
 	store as blocksStore,
 } from '@wordpress/blocks';
-import { PanelBody, __unstableMotion as motion } from '@wordpress/components';
+import {
+	PanelBody,
+	__unstableMotion as motion,
+	__experimentalUseSlotFills as useSlotFills,
+} from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 
 /**
@@ -31,6 +35,29 @@ import useBlockInspectorAnimationSettings from './useBlockInspectorAnimationSett
 import BlockInfo from '../block-info-slot-fill';
 import BlockQuickNavigation from '../block-quick-navigation';
 import { useBorderPanelLabel } from '../../hooks/border';
+
+function BlockInspectorContentLockedUI( {
+	clientId,
+	contentLockingParent,
+	isContentLockedChild,
+	isContentLockedParent,
+} ) {
+	const contentOnlyFills = useSlotFills( 'InspectorControlsContentOnly' );
+	const isChildWithoutContentControls =
+		isContentLockedChild && ! contentOnlyFills?.length;
+
+	if ( isChildWithoutContentControls || isContentLockedParent ) {
+		const parentClientId = isContentLockedParent
+			? clientId
+			: contentLockingParent;
+
+		return (
+			<BlockInspectorContentLockedParent clientId={ parentClientId } />
+		);
+	}
+
+	return <BlockInspectorContentLockedChild clientId={ clientId } />;
+}
 
 function BlockInspectorContentLockedParent( { clientId } ) {
 	const contentClientIds = useSelect(
@@ -89,6 +116,7 @@ const BlockInspector = ( { showNoBlockSelectedMessage = true } ) => {
 		blockType,
 		isContentLockedParent,
 		isContentLockedChild,
+		contentLockingParent,
 	} = useSelect( ( select ) => {
 		const {
 			getSelectedBlockClientIds,
@@ -103,6 +131,9 @@ const BlockInspector = ( { showNoBlockSelectedMessage = true } ) => {
 			_selectedBlockClientId && getBlockName( _selectedBlockClientId );
 		const _blockType =
 			_selectedBlockName && getBlockType( _selectedBlockName );
+		const _contentLockingParent = __unstableGetContentLockingParent(
+			_selectedBlockClientId
+		);
 
 		return {
 			count: getSelectedBlockCount(),
@@ -112,9 +143,8 @@ const BlockInspector = ( { showNoBlockSelectedMessage = true } ) => {
 			isContentLockedParent:
 				getTemplateLock( _selectedBlockClientId ) === 'contentOnly' ||
 				_selectedBlockName === 'core/block',
-			isContentLockedChild: !! __unstableGetContentLockingParent(
-				_selectedBlockClientId
-			),
+			isContentLockedChild: !! _contentLockingParent,
+			contentLockingParent: _contentLockingParent,
 		};
 	}, [] );
 
@@ -164,18 +194,14 @@ const BlockInspector = ( { showNoBlockSelectedMessage = true } ) => {
 		}
 		return null;
 	}
-	if ( isContentLockedParent ) {
-		return (
-			<BlockInspectorContentLockedParent
-				clientId={ selectedBlockClientId }
-			/>
-		);
-	}
 
-	if ( isContentLockedChild ) {
+	if ( isContentLockedChild || isContentLockedParent ) {
 		return (
-			<BlockInspectorContentLockedChild
+			<BlockInspectorContentLockedUI
 				clientId={ selectedBlockClientId }
+				contentLockingParent={ contentLockingParent }
+				isContentLockedParent={ isContentLockedParent }
+				isContentLockedChild={ isContentLockedChild }
 			/>
 		);
 	}
